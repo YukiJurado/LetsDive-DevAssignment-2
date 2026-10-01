@@ -1,0 +1,160 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Shark ScrollWorld — detailed diving-mask intro</title>
+  <style>
+    :root { color-scheme: light; background: #d6edf0; }
+    * { box-sizing: border-box; }
+    html { scroll-behavior: auto; }
+    body { margin: 0; overflow-x: hidden; }
+    .journey { height: 560vh; }
+    .stage { position: sticky; top: 0; height: 100svh; overflow: hidden; isolation: isolate; background: #60cbd7; }
+    .scene, .wash, .vignette, .sparkle-field, .bubbles, .cue { position: absolute; inset: 0; pointer-events: none; }
+    .scene { width: 100%; height: 100%; object-fit: cover; object-position: center; will-change: opacity, transform; }
+    .surface { z-index: 0; opacity: 1; transform: scale(1.06); }
+    .waterline { z-index: 1; opacity: 0; transform: scale(1.08); }
+    .reef { z-index: 2; opacity: 0; transform: scale(1.06); }
+    .shark { z-index: 3; opacity: 0; transform: scale(1.05); }
+    .wash { z-index: 4; opacity: 0; background: linear-gradient(180deg, #e8ffff00 12%, #50c6d938 54%, #0f9bb654 100%); mix-blend-mode: screen; }
+    .sparkle-field { z-index: 5; opacity: .7; background: radial-gradient(circle at 50% 50%, #fff8cb99 0, #fff6d322 10%, transparent 31%), radial-gradient(circle at 24% 65%, #ffffff65 0, transparent 12%), radial-gradient(circle at 83% 59%, #ffffff6e 0, transparent 11%); mix-blend-mode: screen; will-change: opacity, transform; }
+    .mask-group { position: absolute; z-index: 9; left: 50%; top: 50%; width: min(96vw, 154vh); aspect-ratio: 1672 / 940; transform: translate(-50%, -50%) translateY(6vh) rotate(-5deg) scale(.58); transform-origin: 50% 50%; will-change: transform, opacity; }
+    .lens-ocean, .lens-sheen, .mask-rim { position: absolute; inset: 0; width: 100%; height: 100%; }
+    .lens-ocean { object-fit: cover; clip-path: polygon(14% 29%, 17% 23%, 23% 19%, 77% 19%, 83% 23%, 87% 29%, 88% 40%, 87% 53%, 83% 64%, 76% 70%, 68% 73%, 61% 69%, 55% 57%, 50% 53%, 45% 57%, 39% 69%, 32% 73%, 24% 70%, 17% 64%, 13% 53%, 12% 40%); }
+    .lens-sheen { clip-path: polygon(14% 29%, 17% 23%, 23% 19%, 77% 19%, 83% 23%, 87% 29%, 88% 40%, 87% 53%, 83% 64%, 76% 70%, 68% 73%, 61% 69%, 55% 57%, 50% 53%, 45% 57%, 39% 69%, 32% 73%, 24% 70%, 17% 64%, 13% 53%, 12% 40%); background: linear-gradient(117deg, #fffdf899 2%, #ffffff08 29%, #d6ffff13 55%, #ffffff84 95%); mix-blend-mode: screen; opacity: .5; }
+    .mask-rim { object-fit: contain; filter: drop-shadow(0 2.3vw 2.2vw #063d5a55); }
+    .title { position: absolute; left: 50%; top: 40%; width: max-content; margin: 0; transform: translate(-50%, -50%); color: #fffef0; text-shadow: 0 2px 15px #0c5972, 0 1px 2px #05536e; font: italic 400 clamp(2.2rem, 5.5vw, 6.2rem)/1 Georgia, serif; letter-spacing: -.045em; white-space: nowrap; will-change: opacity; }
+    .drop { position: absolute; z-index: 10; width: clamp(12px, 2.3vw, 42px); aspect-ratio: 1; border-radius: 55% 45% 60% 40%; border: 1.5px solid #fffde5b3; background: radial-gradient(circle at 30% 25%, #ffffffbd 0 8%, #e4ffff69 10%, #ffffff12 50%, #a5eeff52 88%); box-shadow: inset 2px 2px 8px #fff8, 0 3px 8px #0b638a25; backdrop-filter: blur(1px); will-change: transform, opacity; }
+    .drop.a { left: 18%; top: 22%; width: clamp(14px, 2.6vw, 48px); }
+    .drop.b { left: 75%; top: 27%; width: clamp(10px, 1.7vw, 32px); }
+    .drop.c { left: 30%; top: 60%; width: clamp(9px, 1.3vw, 25px); }
+    .drop.d { left: 67%; top: 67%; width: clamp(7px, 1vw, 20px); }
+    .spray { position: absolute; z-index: 7; inset: 0; opacity: 0; pointer-events: none; background: radial-gradient(circle at 10% 40%, #fff 0 3px, transparent 5px), radial-gradient(circle at 25% 78%, #fff 0 7px, transparent 10px), radial-gradient(circle at 48% 14%, #fff 0 4px, transparent 7px), radial-gradient(circle at 77% 35%, #fff 0 8px, transparent 12px), radial-gradient(circle at 92% 68%, #fff 0 5px, transparent 9px); filter: blur(.5px); will-change: opacity, transform; }
+    .bubbles { z-index: 8; opacity: 0; will-change: opacity, transform; }
+    .bubble { position: absolute; display: block; aspect-ratio: 1; border-radius: 50%; border: 1.5px solid #e2ffffbb; box-shadow: inset 3px 2px 8px #fffb, 0 0 18px #b8ffff7d; }
+    .bubble:nth-child(1) { width: clamp(20px, 3vw, 50px); left: 12%; top: 76%; }
+    .bubble:nth-child(2) { width: clamp(10px, 1.5vw, 27px); left: 23%; top: 59%; }
+    .bubble:nth-child(3) { width: clamp(17px, 2.3vw, 39px); left: 76%; top: 80%; }
+    .bubble:nth-child(4) { width: clamp(9px, 1.1vw, 19px); left: 87%; top: 47%; }
+    .bubble:nth-child(5) { width: clamp(11px, 1.3vw, 22px); left: 54%; top: 88%; }
+    .vignette { z-index: 6; opacity: 0; box-shadow: inset 0 0 15vw 7vw #063b5b; }
+    .cue { z-index: 12; inset: auto auto max(18px, 3vh) 50%; transform: translateX(-50%); width: 28px; height: 44px; border: 1.5px solid #f8ffefd6; border-radius: 18px; box-shadow: 0 0 12px #00769b6e; }
+    .cue::after { content: ''; position: absolute; left: 11px; top: 9px; width: 4px; height: 9px; border-radius: 4px; background: #fffdf0; animation: cue 1.6s ease-in-out infinite; }
+    @keyframes cue { 0%,100% { transform: translateY(0); opacity: .9; } 62% { transform: translateY(12px); opacity: .25; } }
+    .sr-only { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0,0,0,0); white-space: nowrap; border: 0; }
+    .reduced-ending { display: none; }
+    @media (prefers-reduced-motion: reduce) {
+      .journey { height: auto; }
+      .stage { position: relative; height: 100svh; }
+      .surface { opacity: 1 !important; transform: none !important; }
+      .mask-group { transform: translate(-50%, -50%) scale(.72) !important; opacity: 1 !important; }
+      .waterline, .reef, .shark, .wash, .sparkle-field, .spray, .bubbles, .vignette, .cue { display: none; }
+      .reduced-ending { display: block; height: 100svh; background: url('assets/shark-scrollworld-style-frame-v1.png') center / cover no-repeat; }
+    }
+  </style>
+</head>
+<body>
+  <main class="journey" aria-label="Put on a mask and dive into a watercolor ocean">
+    <section class="stage">
+      <img class="scene surface" src="assets/shark-intro-ocean-surface-v1.png" alt="A watercolor sea sparkles beneath a pale sky.">
+      <img class="scene waterline" src="assets/shark-intro-waterline-v1.png" alt="">
+      <img class="scene reef" src="assets/shark-intro-empty-reef-v1.png" alt="">
+      <img class="scene shark" src="assets/shark-scrollworld-style-frame-v1.png" alt="A blacktip reef shark glides into a bright coral reef.">
+      <div class="wash" aria-hidden="true"></div>
+      <div class="sparkle-field" aria-hidden="true"></div>
+      <div class="vignette" aria-hidden="true"></div>
+      <div class="mask-group">
+        <img class="lens-ocean" src="assets/shark-intro-empty-reef-v1.png" alt="">
+        <div class="lens-sheen" aria-hidden="true"></div>
+        <img class="mask-rim" src="assets/shark-intro-watercolor-diving-mask-v1.png" alt="">
+        <span class="drop a" aria-hidden="true"></span><span class="drop b" aria-hidden="true"></span>
+        <span class="drop c" aria-hidden="true"></span><span class="drop d" aria-hidden="true"></span>
+        <h1 class="title">lets dive!</h1>
+      </div>
+      <div class="spray" aria-hidden="true"></div>
+      <div class="bubbles" aria-hidden="true"><i class="bubble"></i><i class="bubble"></i><i class="bubble"></i><i class="bubble"></i><i class="bubble"></i></div>
+      <div class="cue" aria-hidden="true"></div>
+      <p class="sr-only">Scroll down to draw the diving mask toward you, cross the sunlit waterline, enter the reef, and encounter the first blacktip shark. Scroll back to reverse the journey.</p>
+    </section>
+    <div class="reduced-ending" role="img" aria-label="A blacktip reef shark in a watercolor coral reef"></div>
+  </main>
+  <script src="https://cdn.jsdelivr.net/npm/gsap@3.15.0/dist/gsap.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/gsap@3.15.0/dist/ScrollTrigger.min.js"></script>
+  <script>
+    (() => {
+      if (matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+      const q = (selector) => document.querySelector(selector);
+      const journey = q('.journey');
+      const surface = q('.surface');
+      const waterline = q('.waterline');
+      const reef = q('.reef');
+      const shark = q('.shark');
+      const mask = q('.mask-group');
+      const title = q('.title');
+      const drops = [...document.querySelectorAll('.drop')];
+      const sparkle = q('.sparkle-field');
+      const wash = q('.wash');
+      const spray = q('.spray');
+      const bubbles = q('.bubbles');
+      const vignette = q('.vignette');
+      const cue = q('.cue');
+      const clamp = (x) => Math.max(0, Math.min(1, x));
+      const span = (x, a, b) => clamp((x - a) / (b - a));
+      const pulse = (x, a, b, c, d) => span(x, a, b) * (1 - span(x, c, d));
+      const setOpacity = (el, value) => { el.style.opacity = clamp(value).toFixed(3); };
+      function render(progress) {
+        const p = clamp(progress);
+        const approach = span(p, .04, .57);
+        const through = span(p, .40, .75);
+        const reefIn = span(p, .60, .82);
+        const sharkIn = span(p, .84, .98);
+        setOpacity(surface, 1 - span(p, .43, .67));
+        surface.style.transform = `scale(${(1.06 + .08 * span(p, 0, .53)).toFixed(3)}) translateY(${(2.5 * span(p, .05, .53)).toFixed(2)}%)`;
+        setOpacity(waterline, pulse(p, .40, .58, .68, .81));
+        waterline.style.transform = `scale(${(1.08 - .08 * through).toFixed(3)}) translateY(${(-4 * through).toFixed(2)}%)`;
+        setOpacity(reef, reefIn * (1 - span(p, .87, 1)));
+        reef.style.transform = `scale(${(1.06 - .06 * span(p, .60, .91)).toFixed(3)})`;
+        setOpacity(shark, sharkIn);
+        shark.style.transform = `scale(${(1.05 - .05 * sharkIn).toFixed(3)})`;
+        mask.style.transform = `translate(-50%, -50%) translateY(${(6 - 6 * approach).toFixed(2)}vh) rotate(${(-5 + 5 * approach).toFixed(2)}deg) scale(${(.58 + 2.83 * approach).toFixed(3)})`;
+        setOpacity(mask, 1 - span(p, .53, .71));
+        setOpacity(title, 1 - span(p, .18, .37));
+        drops.forEach((drop, index) => {
+          drop.style.transform = `translate(${(index % 2 ? 5 : -4) * approach}px, ${(index + 1) * 34 * approach}px) scale(${(1 - .26 * approach).toFixed(3)})`;
+          setOpacity(drop, (1 - span(p, .29, .48)) * (.7 + .08 * index));
+        });
+        setOpacity(sparkle, .76 * (1 - span(p, .32, .62)));
+        sparkle.style.transform = `translate(${(-4 * span(p, .05, .49)).toFixed(2)}%, ${(3 * span(p, .05, .49)).toFixed(2)}%) scale(${(1 + .23 * span(p, .03, .48)).toFixed(3)})`;
+        setOpacity(wash, pulse(p, .43, .55, .77, .91) * .85);
+        setOpacity(spray, pulse(p, .47, .59, .68, .82));
+        spray.style.transform = `translateY(${(-80 * span(p, .49, .77)).toFixed(1)}px)`;
+        setOpacity(bubbles, pulse(p, .52, .67, .88, 1));
+        bubbles.style.transform = `translateY(${(-120 * span(p, .53, .94)).toFixed(1)}px)`;
+        setOpacity(vignette, pulse(p, .38, .55, .68, .88) * .36);
+        setOpacity(cue, 1 - span(p, .11, .27));
+      }
+      render(0);
+      if (window.gsap && window.ScrollTrigger) {
+        gsap.registerPlugin(ScrollTrigger);
+        ScrollTrigger.create({
+          trigger: journey,
+          start: 'top top',
+          end: 'bottom bottom',
+          onUpdate: (self) => render(self.progress),
+          onRefresh: (self) => render(self.progress)
+        });
+        addEventListener('load', () => ScrollTrigger.refresh(), { once: true });
+      } else {
+        const update = () => {
+          const distance = Math.max(1, journey.offsetHeight - innerHeight);
+          render(-journey.getBoundingClientRect().top / distance);
+        };
+        addEventListener('scroll', update, { passive: true });
+        addEventListener('resize', update);
+        update();
+      }
+    })();
+  </script>
+</body>
+</html>
