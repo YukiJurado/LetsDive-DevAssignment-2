@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Shark ScrollWorld — detailed diving-mask intro</title>
+  <title>Let's Dive — watercolor shark journey</title>
   <style>
     :root { color-scheme: light; background: #d6edf0; }
     * { box-sizing: border-box; }
@@ -41,6 +41,15 @@
     .vignette { z-index: 6; opacity: 0; box-shadow: inset 0 0 15vw 7vw #063b5b; }
     .cue { z-index: 12; inset: auto auto max(18px, 3vh) 50%; transform: translateX(-50%); width: 28px; height: 44px; border: 1.5px solid #f8ffefd6; border-radius: 18px; box-shadow: 0 0 12px #00769b6e; }
     .cue::after { content: ''; position: absolute; left: 11px; top: 9px; width: 4px; height: 9px; border-radius: 4px; background: #fffdf0; animation: cue 1.6s ease-in-out infinite; }
+    .whale-journey { height: 360vh; }
+    .whale-stage { position: sticky; top: 0; height: 100svh; overflow: hidden; isolation: isolate; background: #1b9dc2; }
+    .whale-frame, .whale-water, .whale-light, .whale-bubbles { position: absolute; inset: 0; pointer-events: none; }
+    .whale-frame { width: 100%; height: 100%; object-fit: cover; object-position: center; will-change: opacity, transform; }
+    .whale-blacktip { z-index: 0; }
+    .whale-whales { z-index: 1; opacity: 0; transform: scale(1.2) translateY(8%); }
+    .whale-water { z-index: 2; opacity: 0; background: linear-gradient(180deg, #d7fff8ad 0%, #9ce5f575 30%, #2cb7d866 70%, #07669f44 100%); mix-blend-mode: screen; will-change: opacity; }
+    .whale-light { z-index: 3; opacity: 0; background: radial-gradient(ellipse at 50% -15%, #fffee4da, #c7fff265 34%, transparent 73%); mix-blend-mode: screen; will-change: opacity; }
+    .whale-bubbles { z-index: 4; opacity: 0; background: radial-gradient(circle at 13% 88%, #eaffff9e 0 3px, transparent 5px), radial-gradient(circle at 32% 77%, #eaffffbd 0 5px, transparent 7px), radial-gradient(circle at 67% 89%, #eaffffaf 0 3px, transparent 5px), radial-gradient(circle at 86% 72%, #eaffffaf 0 6px, transparent 9px); background-size: 32vw 38vh; will-change: opacity, transform; }
     @keyframes cue { 0%,100% { transform: translateY(0); opacity: .9; } 62% { transform: translateY(12px); opacity: .25; } }
     .sr-only { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0,0,0,0); white-space: nowrap; border: 0; }
     .reduced-ending { display: none; }
@@ -51,6 +60,10 @@
       .mask-group { transform: translate(-50%, -50%) scale(.72) !important; opacity: 1 !important; }
       .waterline, .reef, .shark, .wash, .sparkle-field, .spray, .bubbles, .vignette, .cue { display: none; }
       .reduced-ending { display: block; height: 100svh; background: url('assets/shark-scrollworld-style-frame-v1.png') center / cover no-repeat; }
+      .whale-journey { height: 100svh; }
+      .whale-stage { position: relative; }
+      .whale-blacktip, .whale-water, .whale-light, .whale-bubbles { display: none; }
+      .whale-whales { opacity: 1 !important; transform: none !important; }
     }
   </style>
 </head>
@@ -79,6 +92,15 @@
     </section>
     <div class="reduced-ending" role="img" aria-label="A blacktip reef shark in a watercolor coral reef"></div>
   </main>
+  <section class="whale-journey" aria-label="Follow the blacktip toward whale sharks near the surface">
+    <div class="whale-stage">
+      <img class="whale-frame whale-blacktip" src="assets/shark-scrollworld-style-frame-v1.png" alt="">
+      <img class="whale-frame whale-whales" src="assets/storyboard/shark-storyboard-whale-sharks-v2.png" alt="Several whale sharks swim beneath the sunlit surface.">
+      <div class="whale-water" aria-hidden="true"></div>
+      <div class="whale-light" aria-hidden="true"></div>
+      <div class="whale-bubbles" aria-hidden="true"></div>
+    </div>
+  </section>
   <script src="https://cdn.jsdelivr.net/npm/gsap@3.15.0/dist/gsap.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/gsap@3.15.0/dist/ScrollTrigger.min.js"></script>
   <script>
@@ -99,6 +121,12 @@
       const bubbles = q('.bubbles');
       const vignette = q('.vignette');
       const cue = q('.cue');
+      const whaleJourney = q('.whale-journey');
+      const whaleBlacktip = q('.whale-blacktip');
+      const whaleWhales = q('.whale-whales');
+      const whaleWater = q('.whale-water');
+      const whaleLight = q('.whale-light');
+      const whaleBubbles = q('.whale-bubbles');
       const clamp = (x) => Math.max(0, Math.min(1, x));
       const span = (x, a, b) => clamp((x - a) / (b - a));
       const pulse = (x, a, b, c, d) => span(x, a, b) * (1 - span(x, c, d));
@@ -134,7 +162,21 @@
         setOpacity(vignette, pulse(p, .38, .55, .68, .88) * .36);
         setOpacity(cue, 1 - span(p, .11, .27));
       }
+      function renderWhales(progress) {
+        const p = clamp(progress);
+        const lookUp = span(p, .06, .48);
+        const reveal = span(p, .40, .74);
+        setOpacity(whaleBlacktip, 1 - reveal);
+        whaleBlacktip.style.transform = `scale(${(1 + .18 * lookUp).toFixed(3)}) translate(${(-4 * lookUp).toFixed(2)}%, ${(16 * lookUp).toFixed(2)}%)`;
+        setOpacity(whaleWhales, reveal);
+        whaleWhales.style.transform = `scale(${(1.2 - .2 * span(p, .43, 1)).toFixed(3)}) translateY(${(8 - 8 * span(p, .43, 1)).toFixed(2)}%)`;
+        setOpacity(whaleWater, pulse(p, .17, .36, .57, .84) * .8);
+        setOpacity(whaleLight, pulse(p, .18, .42, .64, .88) * .7);
+        setOpacity(whaleBubbles, pulse(p, .18, .39, .76, 1) * .75);
+        whaleBubbles.style.transform = `translateY(${(-18 * span(p, .15, .86)).toFixed(2)}%)`;
+      }
       render(0);
+      renderWhales(0);
       if (window.gsap && window.ScrollTrigger) {
         gsap.registerPlugin(ScrollTrigger);
         ScrollTrigger.create({
@@ -144,11 +186,20 @@
           onUpdate: (self) => render(self.progress),
           onRefresh: (self) => render(self.progress)
         });
+        ScrollTrigger.create({
+          trigger: whaleJourney,
+          start: 'top top',
+          end: 'bottom bottom',
+          onUpdate: (self) => renderWhales(self.progress),
+          onRefresh: (self) => renderWhales(self.progress)
+        });
         addEventListener('load', () => ScrollTrigger.refresh(), { once: true });
       } else {
         const update = () => {
           const distance = Math.max(1, journey.offsetHeight - innerHeight);
           render(-journey.getBoundingClientRect().top / distance);
+          const whaleDistance = Math.max(1, whaleJourney.offsetHeight - innerHeight);
+          renderWhales(-whaleJourney.getBoundingClientRect().top / whaleDistance);
         };
         addEventListener('scroll', update, { passive: true });
         addEventListener('resize', update);
