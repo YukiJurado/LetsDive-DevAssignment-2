@@ -403,6 +403,16 @@ body {
   opacity: 0;
   will-change: opacity, transform;
 }
+/* Soft patches reveal the great white in the order belly, eye, whole body. */
+.great-white-belly {
+  -webkit-mask-image: radial-gradient(ellipse 32% 23% at 35% 62%, #000 15%, transparent 95%);
+  mask-image: radial-gradient(ellipse 32% 23% at 35% 62%, #000 15%, transparent 95%);
+  filter: brightness(1.14);
+}
+.great-white-eye {
+  -webkit-mask-image: radial-gradient(ellipse 15% 18% at 18% 43%, #000 18%, transparent 92%);
+  mask-image: radial-gradient(ellipse 15% 18% at 18% 43%, #000 18%, transparent 92%);
+}
 .deep-current {
   position: absolute;
   z-index: 8;
@@ -429,6 +439,13 @@ body {
   }
   .great-white-frame, .sixgill-frame {
     object-position: 28% center;
+  }
+  .great-white-belly, .great-white-eye {
+    object-position: 28% center;
+  }
+  .great-white-eye {
+    -webkit-mask-image: radial-gradient(ellipse 22% 15% at 29% 43%, #000 15%, transparent 92%);
+    mask-image: radial-gradient(ellipse 22% 15% at 29% 43%, #000 15%, transparent 92%);
   }
 }
 @keyframes cue {

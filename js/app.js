@@ -29,6 +29,8 @@
   const hammerAnimation = q('.hammer-animation');
   const deepStage = q('.deep-stage');
   const hammerhead = q('.hammerhead-frame');
+  const greatWhiteBelly = q('.great-white-belly');
+  const greatWhiteEye = q('.great-white-eye');
   const greatWhite = q('.great-white-frame');
   const sixgill = q('.sixgill-frame');
   const tooth = q('.tooth-frame');
@@ -62,14 +64,15 @@
   }
   function updateSound(progress) {
     const underwater = progress >= .34;
-    ambience.volume = .3 * span(progress, .34, .43) * (1 - .9 * pulse(progress, .84, .87, .93, .97));
+    ambience.volume = .3 * span(progress, .34, .43) * (1 - .4 * span(progress, .55, .85)) * (1 - .9 * pulse(progress, .89, .92, .96, .99));
     if (soundEnabled && underwater) {
       if (ambience.paused) ambience.play().catch(() => {});
       if (lastProgress < .34) playEffect(splash);
       if (lastProgress < .32 && progress >= .32) playEffect(glide);
       if (lastProgress < .51 && progress >= .51) playEffect(glide);
-      if (lastProgress < .62 && progress >= .62) playEffect(glide);
-      if (lastProgress < .87 && progress >= .87) playEffect(inkImpact);
+      if (lastProgress < .75 && progress >= .75) playEffect(glide);
+      if (lastProgress < .82 && progress >= .82) playEffect(glide);
+      if (lastProgress < .92 && progress >= .92) playEffect(inkImpact);
     } else if (!ambience.paused) {
       ambience.pause();
     }
@@ -153,24 +156,28 @@
   }
   function renderDeep(progress) {
     const p = clamp(progress);
-    setOpacity(hammerhead, 1 - span(p, .14, .21));
-    setOpacity(greatWhite, span(p, .14, .21) * (1 - span(p, .31, .38)));
-    setOpacity(sixgill, span(p, .31, .38) * (1 - span(p, .49, .55)));
-    setOpacity(tooth, span(p, .49, .55) * (1 - span(p, .705, .72)));
-    setOpacity(mouth, span(p, .70, .715) * (1 - span(p, .78, .80)));
-    setOpacity(suspense, span(p, .76, .80) * (1 - span(p, .86, .92)));
-    setOpacity(calmReturn, span(p, .86, .92));
-    hammerhead.style.transform = `translate(${(-6 * span(p, 0, .2)).toFixed(2)}%, ${(7 * span(p, 0, .2)).toFixed(2)}%) scale(${(1 + .11 * span(p, 0, .2)).toFixed(3)})`;
-    greatWhite.style.transform = `translate(${(7 - 12 * span(p, .15, .37)).toFixed(2)}%, ${(6 * span(p, .15, .37)).toFixed(2)}%) scale(${(1.1 + .12 * span(p, .15, .37)).toFixed(3)})`;
-    sixgill.style.transform = `translate(${(6 - 11 * span(p, .32, .54)).toFixed(2)}%, ${(4 * span(p, .32, .54)).toFixed(2)}%) scale(${(.94 + .27 * span(p, .32, .54)).toFixed(3)})`;
-    tooth.style.transform = `translateY(${(8 - 8 * span(p, .5, .69)).toFixed(2)}%) scale(${(1.2 - .13 * span(p, .5, .69)).toFixed(3)})`;
-    mouth.style.transform = `scale(${(.65 + 1.42 * span(p, .70, .78)).toFixed(3)})`;
-    suspense.style.transform = `scale(${(1.08 - .07 * span(p, .77, .91)).toFixed(3)})`;
-    calmReturn.style.transform = `scale(${(1.15 - .15 * span(p, .86, 1)).toFixed(3)})`;
+    setOpacity(hammerhead, 1 - span(p, .12, .20));
+    setOpacity(greatWhiteBelly, pulse(p, .26, .31, .36, .40));
+    setOpacity(greatWhiteEye, pulse(p, .34, .39, .43, .47));
+    setOpacity(greatWhite, span(p, .42, .48) * (1 - span(p, .56, .62)));
+    setOpacity(sixgill, span(p, .56, .62) * (1 - span(p, .67, .72)));
+    setOpacity(tooth, span(p, .67, .72) * (1 - span(p, .80, .83)));
+    setOpacity(mouth, span(p, .81, .83) * (1 - span(p, .87, .89)));
+    setOpacity(suspense, span(p, .87, .90) * (1 - span(p, .94, .97)));
+    setOpacity(calmReturn, span(p, .94, .98));
+    hammerhead.style.transform = `translate(${(-7 * span(p, 0, .2)).toFixed(2)}%, ${(9 * span(p, 0, .2)).toFixed(2)}%) scale(${(1 + .12 * span(p, 0, .2)).toFixed(3)})`;
+    greatWhiteBelly.style.transform = `translateX(${(20 - 18 * span(p, .26, .40)).toFixed(2)}%) scale(1.28)`;
+    greatWhiteEye.style.transform = `translateX(${(8 - 8 * span(p, .34, .47)).toFixed(2)}%) scale(1.20)`;
+    greatWhite.style.transform = `translate(${(7 - 12 * span(p, .42, .62)).toFixed(2)}%, ${(6 * span(p, .42, .62)).toFixed(2)}%) scale(${(1.1 + .12 * span(p, .42, .62)).toFixed(3)})`;
+    sixgill.style.transform = `translate(${(6 - 11 * span(p, .56, .72)).toFixed(2)}%, ${(4 * span(p, .56, .72)).toFixed(2)}%) scale(${(.94 + .27 * span(p, .56, .72)).toFixed(3)})`;
+    tooth.style.transform = `translateY(${(8 - 8 * span(p, .67, .83)).toFixed(2)}%) scale(${(1.2 - .13 * span(p, .67, .83)).toFixed(3)})`;
+    mouth.style.transform = `scale(${(.65 + 1.42 * span(p, .81, .89)).toFixed(3)})`;
+    suspense.style.transform = `scale(${(1.08 - .07 * span(p, .87, .97)).toFixed(3)})`;
+    calmReturn.style.transform = `scale(${(1.15 - .15 * span(p, .94, 1)).toFixed(3)})`;
     deepCurrent.style.transform = `translateY(${(-12 * p).toFixed(2)}%)`;
-    setOpacity(deepCurrent, .32 * (1 - span(p, .68, .79)) + .12 * span(p, .91, 1));
-    setOpacity(deepInk, pulse(p, .75, .79, .84, .92) * .86);
-    deepInk.style.transform = `scale(${(1.1 + .5 * span(p, .75, .88)).toFixed(3)})`;
+    setOpacity(deepCurrent, .32 * (1 - span(p, .80, .89)) + .12 * span(p, .97, 1));
+    setOpacity(deepInk, pulse(p, .87, .90, .92, .97) * .86);
+    deepInk.style.transform = `scale(${(1.1 + .5 * span(p, .87, .97)).toFixed(3)})`;
   }
   const renderJourney = (progress) => {
     render(progress / .29);
