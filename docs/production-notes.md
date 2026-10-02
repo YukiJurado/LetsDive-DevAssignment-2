@@ -8,9 +8,9 @@ The professor's [Seedance 2.5 announcement](https://thomasmore.instructure.com/c
 
 ## First video test: blacktip to whale sharks
 
-1. Fix the first and last frames before generating movement. The opening frame matches the approved bright reef; the ending frame looks up toward whale sharks under the sunlit surface.
+1. Fix the first and last frames before generating movement. The opening frame is the approved bright blacktip reef. The destination is the top-view whale-shark painting, with three spotted backs seen from above. The older underside painting can guide the initial approach.
 2. Keep both scenes in the same painted-watercolor world. Preserve brush texture, shark anatomy, light direction, and the underwater viewpoint. Do not introduce a photoreal shark or a separate illustrated backdrop.
-3. The blacktip leaves the reef. The camera follows briefly, then tilts and rises toward the surface. Passing water and bubbles hide the handoff. The whale sharks appear overhead and glide slowly enough to appreciate their scale.
+3. The blacktip leaves the reef. The camera follows briefly, then tilts and rises toward the surface. Passing water and bubbles hide the handoff. Whale sharks appear below as the camera arcs above them; they glide slowly enough to appreciate their scale.
 4. Test one short clip or transition at low cost first. Check slow scrolling, fast scrolling, and reverse scrolling in the website before generating the rest of the story.
 5. Record the chosen source frame, destination frame, prompt, model/settings, output file, and what failed or worked. Keep generated video separate from storyboard stills.
 
