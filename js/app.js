@@ -38,20 +38,29 @@
   const suspense = q('.suspense-frame');
   const calmReturn = q('.return-frame');
   const deepCurrent = q('.deep-current');
+  const depthWash = q('.depth-wash');
+  const deepParticles = q('.deep-particles');
   const deepInk = q('.deep-ink');
   const soundToggle = q('.sound-toggle');
   const clamp = (x) => Math.max(0, Math.min(1, x));
-  const span = (x, a, b) => clamp((x - a) / (b - a));
+  // Eased fades make watercolor frames dissolve without visible linear seams.
+  const span = (x, a, b) => {
+    const t = clamp((x - a) / (b - a));
+    return t * t * (3 - 2 * t);
+  };
   const pulse = (x, a, b, c, d) => span(x, a, b) * (1 - span(x, c, d));
   const setOpacity = (el, value) => { el.style.opacity = clamp(value).toFixed(3); };
 
   // Browser audio starts only after the visitor presses the sound button.
   const ambience = new Audio('assets/audio/underwater-ambience.mp3');
+  const deepAmbience = new Audio('assets/audio/deep-pressure.mp3');
   const splash = new Audio('assets/audio/splash-entry.mp3');
   const glide = new Audio('assets/audio/shark-glide.mp3');
   const inkImpact = new Audio('assets/audio/deep-ink-impact.mp3');
   ambience.loop = true;
+  deepAmbience.loop = true;
   ambience.volume = 0;
+  deepAmbience.volume = 0;
   splash.volume = 0.65;
   glide.volume = 0.45;
   inkImpact.volume = 0.72;
@@ -64,17 +73,22 @@
   }
   function updateSound(progress) {
     const underwater = progress >= .34;
-    ambience.volume = .3 * span(progress, .34, .43) * (1 - .4 * span(progress, .55, .85)) * (1 - .9 * pulse(progress, .89, .92, .96, .99));
+    const depth = span(progress, .69, .82);
+    const silence = 1 - .92 * pulse(progress, .925, .94, .965, .99);
+    ambience.volume = .3 * span(progress, .34, .43) * (1 - .75 * depth) * silence;
+    deepAmbience.volume = .22 * depth * silence;
     if (soundEnabled && underwater) {
       if (ambience.paused) ambience.play().catch(() => {});
+      if (deepAmbience.paused) deepAmbience.play().catch(() => {});
       if (lastProgress < .34) playEffect(splash);
       if (lastProgress < .32 && progress >= .32) playEffect(glide);
       if (lastProgress < .51 && progress >= .51) playEffect(glide);
       if (lastProgress < .75 && progress >= .75) playEffect(glide);
       if (lastProgress < .82 && progress >= .82) playEffect(glide);
       if (lastProgress < .92 && progress >= .92) playEffect(inkImpact);
-    } else if (!ambience.paused) {
+    } else {
       ambience.pause();
+      deepAmbience.pause();
     }
     lastProgress = progress;
   }
@@ -156,27 +170,30 @@
   }
   function renderDeep(progress) {
     const p = clamp(progress);
-    setOpacity(hammerhead, 1 - span(p, .12, .20));
-    setOpacity(greatWhiteBelly, pulse(p, .26, .31, .36, .40));
-    setOpacity(greatWhiteEye, pulse(p, .34, .39, .43, .47));
-    setOpacity(greatWhite, span(p, .42, .48) * (1 - span(p, .56, .62)));
-    setOpacity(sixgill, span(p, .56, .62) * (1 - span(p, .67, .72)));
-    setOpacity(tooth, span(p, .67, .72) * (1 - span(p, .80, .83)));
-    setOpacity(mouth, span(p, .81, .83) * (1 - span(p, .87, .89)));
-    setOpacity(suspense, span(p, .87, .90) * (1 - span(p, .94, .97)));
-    setOpacity(calmReturn, span(p, .94, .98));
-    hammerhead.style.transform = `translate(${(-7 * span(p, 0, .2)).toFixed(2)}%, ${(9 * span(p, 0, .2)).toFixed(2)}%) scale(${(1 + .12 * span(p, 0, .2)).toFixed(3)})`;
+    const drift = Math.sin(p * Math.PI * 8) * .65;
+    setOpacity(hammerhead, 1 - span(p, .13, .23));
+    setOpacity(greatWhiteBelly, pulse(p, .26, .32, .37, .42));
+    setOpacity(greatWhiteEye, pulse(p, .35, .41, .45, .50));
+    setOpacity(greatWhite, span(p, .46, .53) * (1 - span(p, .59, .66)));
+    setOpacity(sixgill, span(p, .60, .67) * (1 - span(p, .73, .79)));
+    setOpacity(tooth, span(p, .74, .80) * (1 - span(p, .83, .86)));
+    setOpacity(mouth, span(p, .843, .865) * (1 - span(p, .89, .91)));
+    setOpacity(suspense, span(p, .90, .94) * (1 - span(p, .955, .985)));
+    setOpacity(calmReturn, span(p, .96, .995));
+    hammerhead.style.transform = `translate(${(-9 * span(p, 0, .23)).toFixed(2)}%, ${(8 * span(p, 0, .23) + drift).toFixed(2)}%) scale(${(1 + .15 * span(p, 0, .23)).toFixed(3)})`;
     greatWhiteBelly.style.transform = `translateX(${(20 - 18 * span(p, .26, .40)).toFixed(2)}%) scale(1.28)`;
     greatWhiteEye.style.transform = `translateX(${(8 - 8 * span(p, .34, .47)).toFixed(2)}%) scale(1.20)`;
-    greatWhite.style.transform = `translate(${(7 - 12 * span(p, .42, .62)).toFixed(2)}%, ${(6 * span(p, .42, .62)).toFixed(2)}%) scale(${(1.1 + .12 * span(p, .42, .62)).toFixed(3)})`;
-    sixgill.style.transform = `translate(${(6 - 11 * span(p, .56, .72)).toFixed(2)}%, ${(4 * span(p, .56, .72)).toFixed(2)}%) scale(${(.94 + .27 * span(p, .56, .72)).toFixed(3)})`;
-    tooth.style.transform = `translateY(${(8 - 8 * span(p, .67, .83)).toFixed(2)}%) scale(${(1.2 - .13 * span(p, .67, .83)).toFixed(3)})`;
-    mouth.style.transform = `scale(${(.65 + 1.42 * span(p, .81, .89)).toFixed(3)})`;
+    greatWhite.style.transform = `translate(${(8 - 14 * span(p, .46, .66)).toFixed(2)}%, ${(5 * span(p, .46, .66) + drift).toFixed(2)}%) scale(${(1.12 + .12 * span(p, .46, .66)).toFixed(3)})`;
+    sixgill.style.transform = `translate(${(7 - 12 * span(p, .60, .79)).toFixed(2)}%, ${(4 * span(p, .60, .79) + drift).toFixed(2)}%) scale(${(.96 + .25 * span(p, .60, .79)).toFixed(3)})`;
+    tooth.style.transform = `translateY(${(7 - 7 * span(p, .74, .86)).toFixed(2)}%) scale(${(1.17 - .11 * span(p, .74, .86)).toFixed(3)})`;
+    mouth.style.transform = `scale(${(.72 + 1.38 * span(p, .843, .91)).toFixed(3)})`;
     suspense.style.transform = `scale(${(1.08 - .07 * span(p, .87, .97)).toFixed(3)})`;
     calmReturn.style.transform = `scale(${(1.15 - .15 * span(p, .94, 1)).toFixed(3)})`;
     deepCurrent.style.transform = `translateY(${(-12 * p).toFixed(2)}%)`;
-    setOpacity(deepCurrent, .32 * (1 - span(p, .80, .89)) + .12 * span(p, .97, 1));
-    setOpacity(deepInk, pulse(p, .87, .90, .92, .97) * .86);
+    setOpacity(depthWash, .18 * span(p, .17, .35) + .35 * span(p, .55, .78));
+    setOpacity(deepCurrent, .36 * (1 - span(p, .83, .92)) + .12 * span(p, .97, 1));
+    setOpacity(deepParticles, .35 * span(p, .15, .3) * (1 - span(p, .84, .9)) + .13 * span(p, .96, 1));
+    setOpacity(deepInk, pulse(p, .885, .915, .945, .985) * .92);
     deepInk.style.transform = `scale(${(1.1 + .5 * span(p, .87, .97)).toFixed(3)})`;
   }
   const renderJourney = (progress) => {
@@ -189,6 +206,28 @@
     setOpacity(deepStage, span(progress, .54, .55));
     updateSound(progress);
   };
+  // A short time-based glide removes wheel/touchpad jitter while keeping reverse scroll exact.
+  let targetProgress = 0;
+  let displayedProgress = 0;
+  let animationFrame = 0;
+  let previousTime = 0;
+  function tick(time) {
+    const elapsed = Math.min(64, time - (previousTime || time));
+    previousTime = time;
+    displayedProgress += (targetProgress - displayedProgress) * (1 - Math.exp(-elapsed / 105));
+    if (Math.abs(targetProgress - displayedProgress) < .0001) displayedProgress = targetProgress;
+    renderJourney(displayedProgress);
+    if (displayedProgress !== targetProgress) {
+      animationFrame = requestAnimationFrame(tick);
+    } else {
+      animationFrame = 0;
+      previousTime = 0;
+    }
+  }
+  function setScrollProgress(progress) {
+    targetProgress = clamp(progress);
+    if (!animationFrame) animationFrame = requestAnimationFrame(tick);
+  }
   renderJourney(0);
   if (window.gsap && window.ScrollTrigger) {
     gsap.registerPlugin(ScrollTrigger);
@@ -196,14 +235,14 @@
       trigger: journey,
       start: 'top top',
       end: 'bottom bottom',
-      onUpdate: (self) => renderJourney(self.progress),
-      onRefresh: (self) => renderJourney(self.progress)
+      onUpdate: (self) => setScrollProgress(self.progress),
+      onRefresh: (self) => setScrollProgress(self.progress)
     });
     addEventListener('load', () => ScrollTrigger.refresh(), { once: true });
   } else {
     const update = () => {
       const distance = Math.max(1, journey.offsetHeight - innerHeight);
-      renderJourney(-journey.getBoundingClientRect().top / distance);
+      setScrollProgress(-journey.getBoundingClientRect().top / distance);
     };
     addEventListener('scroll', update, { passive: true });
     addEventListener('resize', update);

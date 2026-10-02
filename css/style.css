@@ -413,6 +413,15 @@ body {
   -webkit-mask-image: radial-gradient(ellipse 15% 18% at 18% 43%, #000 18%, transparent 92%);
   mask-image: radial-gradient(ellipse 15% 18% at 18% 43%, #000 18%, transparent 92%);
 }
+.depth-wash {
+  position: absolute;
+  z-index: 7;
+  inset: 0;
+  pointer-events: none;
+  background: linear-gradient(180deg, #061a3466, #020819bd 78%), radial-gradient(ellipse at 52% 30%, transparent 22%, #010713b8 100%);
+  opacity: 0;
+  will-change: opacity;
+}
 .deep-current {
   position: absolute;
   z-index: 8;
@@ -423,6 +432,18 @@ body {
   mix-blend-mode: screen;
   opacity: .35;
   will-change: transform, opacity;
+}
+.deep-particles {
+  position: absolute;
+  z-index: 8;
+  inset: -8%;
+  pointer-events: none;
+  background: radial-gradient(circle at 12% 17%, #bce9ff82 0 1px, transparent 3px), radial-gradient(circle at 35% 61%, #a5d7ff72 0 1px, transparent 3px), radial-gradient(circle at 72% 27%, #d7edff80 0 1px, transparent 3px), radial-gradient(circle at 89% 83%, #8cc2f177 0 2px, transparent 5px);
+  background-size: 28vw 33vh, 39vw 49vh, 47vw 38vh, 31vw 59vh;
+  mix-blend-mode: screen;
+  opacity: 0;
+  animation: particle-drift 18s ease-in-out infinite alternate;
+  will-change: opacity, transform;
 }
 .deep-ink {
   position: absolute;
@@ -457,6 +478,10 @@ body {
     transform: translateY(12px);
     opacity: .25;
   }
+}
+@keyframes particle-drift {
+  from { transform: translate3d(-1%, 2%, 0); }
+  to { transform: translate3d(2%, -3%, 0); }
 }
 .sr-only {
   position: absolute;
@@ -514,6 +539,9 @@ body {
   }
   .deep-stage {
     display: none;
+  }
+  .deep-particles {
+    animation: none;
   }
   .whale-blacktip, .whale-water, .whale-veil, .whale-light, .whale-bubbles {
     display: none;
