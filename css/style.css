@@ -54,7 +54,7 @@ body {
 }
 /* The sticky stage stays visible while its long scroll track moves past. */
 .journey {
-  height: 900vh;
+  height: 1800vh;
 }
 .stage {
   position: sticky;
@@ -357,6 +357,80 @@ body {
   background-size: 32vw 38vh;
   will-change: opacity, transform;
 }
+/* The camera follows the whale sharks down to the first hammerhead. */
+.whale-hammer-stage {
+  position: absolute;
+  z-index: 12;
+  inset: 0;
+  overflow: hidden;
+  background: #092b59;
+  opacity: 0;
+  pointer-events: none;
+}
+.whale-hammer-stage img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+.hammer-animation {
+  opacity: 0;
+}
+.whale-hammer-stage.sequence-ready .hammer-animation {
+  opacity: 1;
+}
+.whale-hammer-stage.sequence-ready .whale-hammer-fallback {
+  opacity: 0;
+}
+/* Deeper storyboard scenes share one moving body of water. */
+.deep-stage {
+  position: absolute;
+  z-index: 13;
+  inset: 0;
+  overflow: hidden;
+  background: radial-gradient(ellipse at 50% 0, #174e82, #071c48 60%, #020a1d);
+  opacity: 0;
+  pointer-events: none;
+}
+.deep-frame {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center;
+  opacity: 0;
+  will-change: opacity, transform;
+}
+.deep-current {
+  position: absolute;
+  z-index: 8;
+  inset: -20%;
+  pointer-events: none;
+  background: radial-gradient(circle at 14% 40%, #b1ecff3d 0 3px, transparent 9px), radial-gradient(circle at 72% 69%, #badfff29 0 5px, transparent 12px), linear-gradient(180deg, #369ad71c, transparent 42%, #040c2680);
+  background-size: 31vw 41vh, 47vw 52vh, cover;
+  mix-blend-mode: screen;
+  opacity: .35;
+  will-change: transform, opacity;
+}
+.deep-ink {
+  position: absolute;
+  z-index: 9;
+  inset: -8%;
+  pointer-events: none;
+  background: radial-gradient(ellipse at 50% 50%, #01030d 8%, #050a1ed9 42%, transparent 75%);
+  opacity: 0;
+  will-change: opacity, transform;
+}
+@media (max-aspect-ratio: 3/4) {
+  .hammerhead-frame {
+    object-position: 40% center;
+  }
+  .great-white-frame, .sixgill-frame {
+    object-position: 28% center;
+  }
+}
 @keyframes cue {
   0%,100% {
     transform: translateY(0);
@@ -382,6 +456,9 @@ body {
   display: none;
 }
 .reduced-whales {
+  display: none;
+}
+.reduced-deep {
   display: none;
 }
 /* Still illustrations replace the scroll animation when motion is reduced. */
@@ -415,6 +492,12 @@ body {
   .whale-stage {
     display: none;
   }
+  .whale-hammer-stage {
+    display: none;
+  }
+  .deep-stage {
+    display: none;
+  }
   .whale-blacktip, .whale-water, .whale-veil, .whale-light, .whale-bubbles {
     display: none;
   }
@@ -426,5 +509,10 @@ body {
     display: block;
     height: 100svh;
     background: url('../assets/storyboard/shark-storyboard-whale-sharks-top-v3.png') center / cover no-repeat;
+  }
+  .reduced-deep {
+    display: block;
+    height: 100svh;
+    background: url('../assets/storyboard/shark-storyboard-megalodon-calm-return-v1.png') center / cover no-repeat;
   }
 }

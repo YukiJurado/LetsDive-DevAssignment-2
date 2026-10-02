@@ -36,7 +36,7 @@
       <div class="entry-splash" aria-hidden="true"></div>
       <div class="bubbles" aria-hidden="true"><i class="bubble"></i><i class="bubble"></i><i class="bubble"></i><i class="bubble"></i><i class="bubble"></i></div>
       <div class="cue" aria-hidden="true"></div>
-      <div class="whale-stage" aria-label="Follow the blacktip toward whale sharks near the surface">
+      <div class="whale-stage" aria-hidden="true">
         <img class="whale-frame whale-blacktip" src="assets/shark-scrollworld-style-frame-v1.png" alt="">
         <img class="whale-frame whale-whales" src="assets/storyboard/shark-storyboard-whale-sharks-top-v3.png" alt="Looking down through sunlit water at the spotted backs of three whale sharks.">
         <img class="whale-animation" src="assets/video/blacktip-to-whales-frames/frame-001.jpg" alt="">
@@ -45,10 +45,26 @@
         <div class="whale-light" aria-hidden="true"></div>
         <div class="whale-bubbles" aria-hidden="true"></div>
       </div>
-      <p class="sr-only">Scroll down to draw the diving mask toward you, cross the sunlit waterline, enter the reef, and encounter the first blacktip shark. Scroll back to reverse the journey.</p>
+      <div class="whale-hammer-stage" aria-hidden="true">
+        <img class="whale-hammer-fallback" src="assets/storyboard/shark-storyboard-whale-sharks-top-v3.png" alt="">
+        <img class="hammer-animation" src="assets/video/whales-to-hammerhead-frames/frame-001.jpg" alt="">
+      </div>
+      <div class="deep-stage" aria-hidden="true">
+        <img class="deep-frame hammerhead-frame" src="assets/storyboard/shark-storyboard-hammerhead-approach-v1.png" alt="A hammerhead approaches through blue water.">
+        <img class="deep-frame great-white-frame" src="assets/storyboard/shark-storyboard-great-white-body-v3.png" alt="A great white glides through colder, darker water.">
+        <img class="deep-frame sixgill-frame" src="assets/storyboard/shark-storyboard-sixgill-scary-close-v1.png" alt="A sixgill shark emerges from the dark.">
+        <img class="deep-frame tooth-frame" src="assets/storyboard/shark-storyboard-megalodon-tooth-v1.png" alt="A giant ancient tooth rests on the ocean floor.">
+        <img class="deep-frame mouth-frame" src="assets/storyboard/shark-storyboard-megalodon-jumpscare-v1.png" alt="A vision of an ancient megalodon mouth rushes forward.">
+        <img class="deep-frame suspense-frame" src="assets/storyboard/shark-storyboard-megalodon-suspense-hold-v1.png" alt="Dark water holds one bubble in silence.">
+        <img class="deep-frame return-frame" src="assets/storyboard/shark-storyboard-megalodon-calm-return-v1.png" alt="The calm seabed returns, with a single fossil tooth.">
+        <div class="deep-current" aria-hidden="true"></div>
+        <div class="deep-ink" aria-hidden="true"></div>
+      </div>
+      <p class="sr-only">Scroll down to put on the mask, splash into the reef, follow the sharks into darker water, witness an ancient vision, and return to the quiet seabed. Scroll back to reverse the journey.</p>
     </section>
     <div class="reduced-ending" role="img" aria-label="A blacktip reef shark in a watercolor coral reef"></div>
     <div class="reduced-whales" role="img" aria-label="The spotted backs of whale sharks beneath the sunlit surface"></div>
+    <div class="reduced-deep" role="img" aria-label="The calm deep seabed with a megalodon fossil tooth"></div>
   </main>
   <script src="https://cdn.jsdelivr.net/npm/gsap@3.15.0/dist/gsap.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/gsap@3.15.0/dist/ScrollTrigger.min.js"></script>

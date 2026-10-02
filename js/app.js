@@ -25,6 +25,18 @@
   const whaleLight = q('.whale-light');
   const whaleBubbles = q('.whale-bubbles');
   const whaleAnimation = q('.whale-animation');
+  const whaleHammerStage = q('.whale-hammer-stage');
+  const hammerAnimation = q('.hammer-animation');
+  const deepStage = q('.deep-stage');
+  const hammerhead = q('.hammerhead-frame');
+  const greatWhite = q('.great-white-frame');
+  const sixgill = q('.sixgill-frame');
+  const tooth = q('.tooth-frame');
+  const mouth = q('.mouth-frame');
+  const suspense = q('.suspense-frame');
+  const calmReturn = q('.return-frame');
+  const deepCurrent = q('.deep-current');
+  const deepInk = q('.deep-ink');
   const soundToggle = q('.sound-toggle');
   const clamp = (x) => Math.max(0, Math.min(1, x));
   const span = (x, a, b) => clamp((x - a) / (b - a));
@@ -35,10 +47,12 @@
   const ambience = new Audio('assets/audio/underwater-ambience.mp3');
   const splash = new Audio('assets/audio/splash-entry.mp3');
   const glide = new Audio('assets/audio/shark-glide.mp3');
+  const inkImpact = new Audio('assets/audio/deep-ink-impact.mp3');
   ambience.loop = true;
   ambience.volume = 0;
   splash.volume = 0.65;
   glide.volume = 0.45;
+  inkImpact.volume = 0.72;
   let soundEnabled = false;
   let lastProgress = 0;
   function playEffect(sound) {
@@ -48,11 +62,14 @@
   }
   function updateSound(progress) {
     const underwater = progress >= .34;
-    ambience.volume = .3 * span(progress, .34, .43);
+    ambience.volume = .3 * span(progress, .34, .43) * (1 - .9 * pulse(progress, .84, .87, .93, .97));
     if (soundEnabled && underwater) {
       if (ambience.paused) ambience.play().catch(() => {});
       if (lastProgress < .34) playEffect(splash);
-      if (lastProgress < .68 && progress >= .68) playEffect(glide);
+      if (lastProgress < .32 && progress >= .32) playEffect(glide);
+      if (lastProgress < .51 && progress >= .51) playEffect(glide);
+      if (lastProgress < .62 && progress >= .62) playEffect(glide);
+      if (lastProgress < .87 && progress >= .87) playEffect(inkImpact);
     } else if (!ambience.paused) {
       ambience.pause();
     }
@@ -66,24 +83,25 @@
     updateSound(lastProgress);
   });
 
-  // Exported frames from the video respond immediately in either scroll direction.
-  const whaleFrames = Array.from({ length: 120 }, (_, index) =>
-    `assets/video/blacktip-to-whales-frames/frame-${String(index + 1).padStart(3, '0')}.jpg`
-  );
-  whaleAnimation.addEventListener('load', () => whaleStage.classList.add('sequence-ready'));
-  if (whaleAnimation.complete && whaleAnimation.naturalWidth) whaleStage.classList.add('sequence-ready');
-  const preloadedWhaleFrames = whaleFrames.map((src) => {
-    const frame = new Image();
-    frame.src = src;
-    return frame;
-  });
-  let shownFrame = 0;
-  function showWhaleFrame(progress) {
-    const frame = Math.min(119, Math.round(clamp(progress) * 119));
-    if (frame === shownFrame) return;
-    shownFrame = frame;
-    whaleAnimation.src = preloadedWhaleFrames[frame].src;
+  // Each video is exported as images so scrolling can move its frames both ways.
+  function setupFrameSequence(image, stage, folder, count) {
+    const frames = Array.from({ length: count }, (_, index) => {
+      const frame = new Image();
+      frame.src = `${folder}/frame-${String(index + 1).padStart(3, '0')}.jpg`;
+      return frame;
+    });
+    image.addEventListener('load', () => stage.classList.add('sequence-ready'));
+    if (image.complete && image.naturalWidth) stage.classList.add('sequence-ready');
+    let shownFrame = 0;
+    return (progress) => {
+      const nextFrame = Math.min(count - 1, Math.round(clamp(progress) * (count - 1)));
+      if (nextFrame === shownFrame) return;
+      shownFrame = nextFrame;
+      image.src = frames[nextFrame].src;
+    };
   }
+  const showWhaleFrame = setupFrameSequence(whaleAnimation, whaleStage, 'assets/video/blacktip-to-whales-frames', 120);
+  const showHammerFrame = setupFrameSequence(hammerAnimation, whaleHammerStage, 'assets/video/whales-to-hammerhead-frames', 120);
   function render(progress) {
     const p = clamp(progress);
     const approach = span(p, .04, .57);
@@ -133,10 +151,35 @@
     setOpacity(whaleBubbles, pulse(p, .18, .39, .76, 1) * .75);
     whaleBubbles.style.transform = `translateY(${(-18 * span(p, .15, .86)).toFixed(2)}%)`;
   }
+  function renderDeep(progress) {
+    const p = clamp(progress);
+    setOpacity(hammerhead, 1 - span(p, .14, .21));
+    setOpacity(greatWhite, span(p, .14, .21) * (1 - span(p, .31, .38)));
+    setOpacity(sixgill, span(p, .31, .38) * (1 - span(p, .49, .55)));
+    setOpacity(tooth, span(p, .49, .55) * (1 - span(p, .705, .72)));
+    setOpacity(mouth, span(p, .70, .715) * (1 - span(p, .78, .80)));
+    setOpacity(suspense, span(p, .76, .80) * (1 - span(p, .86, .92)));
+    setOpacity(calmReturn, span(p, .86, .92));
+    hammerhead.style.transform = `translate(${(-6 * span(p, 0, .2)).toFixed(2)}%, ${(7 * span(p, 0, .2)).toFixed(2)}%) scale(${(1 + .11 * span(p, 0, .2)).toFixed(3)})`;
+    greatWhite.style.transform = `translate(${(7 - 12 * span(p, .15, .37)).toFixed(2)}%, ${(6 * span(p, .15, .37)).toFixed(2)}%) scale(${(1.1 + .12 * span(p, .15, .37)).toFixed(3)})`;
+    sixgill.style.transform = `translate(${(6 - 11 * span(p, .32, .54)).toFixed(2)}%, ${(4 * span(p, .32, .54)).toFixed(2)}%) scale(${(.94 + .27 * span(p, .32, .54)).toFixed(3)})`;
+    tooth.style.transform = `translateY(${(8 - 8 * span(p, .5, .69)).toFixed(2)}%) scale(${(1.2 - .13 * span(p, .5, .69)).toFixed(3)})`;
+    mouth.style.transform = `scale(${(.65 + 1.42 * span(p, .70, .78)).toFixed(3)})`;
+    suspense.style.transform = `scale(${(1.08 - .07 * span(p, .77, .91)).toFixed(3)})`;
+    calmReturn.style.transform = `scale(${(1.15 - .15 * span(p, .86, 1)).toFixed(3)})`;
+    deepCurrent.style.transform = `translateY(${(-12 * p).toFixed(2)}%)`;
+    setOpacity(deepCurrent, .32 * (1 - span(p, .68, .79)) + .12 * span(p, .91, 1));
+    setOpacity(deepInk, pulse(p, .75, .79, .84, .92) * .86);
+    deepInk.style.transform = `scale(${(1.1 + .5 * span(p, .75, .88)).toFixed(3)})`;
+  }
   const renderJourney = (progress) => {
-    render(progress / .62);
-    renderWhales((progress - .62) / .38);
-    setOpacity(whaleStage, span(progress, .60, .62));
+    render(progress / .29);
+    renderWhales((progress - .29) / .16);
+    showHammerFrame((progress - .45) / .10);
+    renderDeep((progress - .55) / .45);
+    setOpacity(whaleStage, span(progress, .28, .29) * (1 - span(progress, .45, .46)));
+    setOpacity(whaleHammerStage, span(progress, .45, .46) * (1 - span(progress, .54, .55)));
+    setOpacity(deepStage, span(progress, .54, .55));
     updateSound(progress);
   };
   renderJourney(0);
