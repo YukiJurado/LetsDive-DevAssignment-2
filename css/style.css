@@ -1,0 +1,430 @@
+/* The visual layers and reduced-motion stills for the shark journey. */
+:root {
+  color-scheme: light;
+  background: #d6edf0;
+}
+* {
+  box-sizing: border-box;
+}
+html {
+  scroll-behavior: auto;
+}
+body {
+  margin: 0;
+  overflow-x: hidden;
+}
+/* Small fixed control for optional underwater sound. */
+.sound-toggle {
+  position: fixed;
+  z-index: 30;
+  top: 18px;
+  right: 18px;
+  display: grid;
+  place-items: center;
+  width: 48px;
+  height: 48px;
+  padding: 9px;
+  border: 1.5px solid #f9fff0bd;
+  border-radius: 50%;
+  background: #064b65a3;
+  color: #fffdf0;
+  box-shadow: 0 4px 18px #073e6366;
+  backdrop-filter: blur(8px);
+  cursor: pointer;
+}
+.sound-toggle:hover {
+  background: #096886d9;
+}
+.sound-toggle:focus-visible {
+  outline: 3px solid #fff;
+  outline-offset: 3px;
+}
+.sound-toggle svg {
+  width: 30px;
+  height: 30px;
+}
+.sound-waves {
+  display: none;
+}
+.sound-toggle[aria-pressed="true"] .sound-waves {
+  display: initial;
+}
+.sound-toggle[aria-pressed="true"] .sound-off {
+  display: none;
+}
+/* The sticky stage stays visible while its long scroll track moves past. */
+.journey {
+  height: 900vh;
+}
+.stage {
+  position: sticky;
+  top: 0;
+  height: 100svh;
+  overflow: hidden;
+  isolation: isolate;
+  background: #60cbd7;
+}
+.scene, .wash, .vignette, .sparkle-field, .bubbles, .cue {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+.scene {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center;
+  will-change: opacity, transform;
+}
+.surface {
+  z-index: 0;
+  opacity: 1;
+  transform: scale(1.06);
+}
+.waterline {
+  z-index: 1;
+  opacity: 0;
+  transform: scale(1.08);
+}
+.reef {
+  z-index: 2;
+  opacity: 0;
+  transform: scale(1.06);
+}
+.shark {
+  z-index: 3;
+  opacity: 0;
+  transform: scale(1.05);
+}
+.wash {
+  z-index: 4;
+  opacity: 0;
+  background: linear-gradient(180deg, #e8ffff00 12%, #50c6d938 54%, #0f9bb654 100%);
+  mix-blend-mode: screen;
+}
+.sparkle-field {
+  z-index: 5;
+  opacity: .7;
+  background: radial-gradient(circle at 50% 50%, #fff8cb99 0, #fff6d322 10%, transparent 31%), radial-gradient(circle at 24% 65%, #ffffff65 0, transparent 12%), radial-gradient(circle at 83% 59%, #ffffff6e 0, transparent 11%);
+  mix-blend-mode: screen;
+  will-change: opacity, transform;
+}
+/* Intro: mask, lens, sunlight, waterline, and splash. */
+.mask-group {
+  position: absolute;
+  z-index: 9;
+  left: 50%;
+  top: 50%;
+  width: min(96vw, 154vh);
+  aspect-ratio: 1672 / 940;
+  transform: translate(-50%, -50%) translateY(6vh) rotate(-5deg) scale(.58);
+  transform-origin: 50% 50%;
+  will-change: transform, opacity;
+}
+.lens-ocean, .lens-sheen, .mask-rim {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+}
+.lens-ocean {
+  object-fit: cover;
+  clip-path: polygon(14% 29%, 17% 23%, 23% 19%, 77% 19%, 83% 23%, 87% 29%, 88% 40%, 87% 53%, 83% 64%, 76% 70%, 68% 73%, 61% 69%, 55% 57%, 50% 53%, 45% 57%, 39% 69%, 32% 73%, 24% 70%, 17% 64%, 13% 53%, 12% 40%);
+}
+.lens-sheen {
+  clip-path: polygon(14% 29%, 17% 23%, 23% 19%, 77% 19%, 83% 23%, 87% 29%, 88% 40%, 87% 53%, 83% 64%, 76% 70%, 68% 73%, 61% 69%, 55% 57%, 50% 53%, 45% 57%, 39% 69%, 32% 73%, 24% 70%, 17% 64%, 13% 53%, 12% 40%);
+  background: linear-gradient(117deg, #fffdf899 2%, #ffffff08 29%, #d6ffff13 55%, #ffffff84 95%);
+  mix-blend-mode: screen;
+  opacity: .5;
+}
+.mask-rim {
+  object-fit: contain;
+  filter: drop-shadow(0 2.3vw 2.2vw #063d5a55);
+}
+.title {
+  position: absolute;
+  left: 50%;
+  top: 40%;
+  width: max-content;
+  margin: 0;
+  transform: translate(-50%, -50%);
+  color: #fffef0;
+  text-shadow: 0 2px 15px #0c5972, 0 1px 2px #05536e;
+  font: italic 400 clamp(2.2rem, 5.5vw, 6.2rem)/1 Georgia, serif;
+  letter-spacing: -.045em;
+  white-space: nowrap;
+  will-change: opacity;
+}
+.drop {
+  position: absolute;
+  z-index: 10;
+  width: clamp(12px, 2.3vw, 42px);
+  aspect-ratio: 1;
+  border-radius: 55% 45% 60% 40%;
+  border: 1.5px solid #fffde5b3;
+  background: radial-gradient(circle at 30% 25%, #ffffffbd 0 8%, #e4ffff69 10%, #ffffff12 50%, #a5eeff52 88%);
+  box-shadow: inset 2px 2px 8px #fff8, 0 3px 8px #0b638a25;
+  backdrop-filter: blur(1px);
+  will-change: transform, opacity;
+}
+.drop.a {
+  left: 18%;
+  top: 22%;
+  width: clamp(14px, 2.6vw, 48px);
+}
+.drop.b {
+  left: 75%;
+  top: 27%;
+  width: clamp(10px, 1.7vw, 32px);
+}
+.drop.c {
+  left: 30%;
+  top: 60%;
+  width: clamp(9px, 1.3vw, 25px);
+}
+.drop.d {
+  left: 67%;
+  top: 67%;
+  width: clamp(7px, 1vw, 20px);
+}
+.spray {
+  position: absolute;
+  z-index: 7;
+  inset: 0;
+  opacity: 0;
+  pointer-events: none;
+  background: radial-gradient(circle at 10% 40%, #fff 0 3px, transparent 5px), radial-gradient(circle at 25% 78%, #fff 0 7px, transparent 10px), radial-gradient(circle at 48% 14%, #fff 0 4px, transparent 7px), radial-gradient(circle at 77% 35%, #fff 0 8px, transparent 12px), radial-gradient(circle at 92% 68%, #fff 0 5px, transparent 9px);
+  filter: blur(.5px);
+  will-change: opacity, transform;
+}
+.entry-splash {
+  position: absolute;
+  z-index: 10;
+  inset: -8%;
+  opacity: 0;
+  pointer-events: none;
+  background: radial-gradient(ellipse at 50% 36%, #f3ffffd9 0, #d8ffff9c 19%, #9ce6ef5c 43%, transparent 70%), url('../assets/shark-intro-waterline-v1.png') center / cover no-repeat;
+  mix-blend-mode: screen;
+  filter: blur(1px);
+  will-change: opacity, transform;
+}
+.entry-splash::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(circle at 13% 77%, #fff 0 4px, transparent 10px), radial-gradient(circle at 28% 28%, #fff 0 8px, transparent 16px), radial-gradient(circle at 72% 19%, #fff 0 5px, transparent 12px), radial-gradient(circle at 84% 66%, #fff 0 10px, transparent 21px), radial-gradient(circle at 48% 83%, #fff 0 7px, transparent 15px);
+}
+.bubbles {
+  z-index: 8;
+  opacity: 0;
+  will-change: opacity, transform;
+}
+.bubble {
+  position: absolute;
+  display: block;
+  aspect-ratio: 1;
+  border-radius: 50%;
+  border: 1.5px solid #e2ffffbb;
+  box-shadow: inset 3px 2px 8px #fffb, 0 0 18px #b8ffff7d;
+}
+.bubble:nth-child(1) {
+  width: clamp(20px, 3vw, 50px);
+  left: 12%;
+  top: 76%;
+}
+.bubble:nth-child(2) {
+  width: clamp(10px, 1.5vw, 27px);
+  left: 23%;
+  top: 59%;
+}
+.bubble:nth-child(3) {
+  width: clamp(17px, 2.3vw, 39px);
+  left: 76%;
+  top: 80%;
+}
+.bubble:nth-child(4) {
+  width: clamp(9px, 1.1vw, 19px);
+  left: 87%;
+  top: 47%;
+}
+.bubble:nth-child(5) {
+  width: clamp(11px, 1.3vw, 22px);
+  left: 54%;
+  top: 88%;
+}
+.vignette {
+  z-index: 6;
+  opacity: 0;
+  box-shadow: inset 0 0 15vw 7vw #063b5b;
+}
+.cue {
+  z-index: 12;
+  inset: auto auto max(18px, 3vh) 50%;
+  transform: translateX(-50%);
+  width: 28px;
+  height: 44px;
+  border: 1.5px solid #f8ffefd6;
+  border-radius: 18px;
+  box-shadow: 0 0 12px #00769b6e;
+}
+.cue::after {
+  content: '';
+  position: absolute;
+  left: 11px;
+  top: 9px;
+  width: 4px;
+  height: 9px;
+  border-radius: 4px;
+  background: #fffdf0;
+  animation: cue 1.6s ease-in-out infinite;
+}
+/* Animated bridge from the blacktip reef to the whale sharks. */
+.whale-stage {
+  position: absolute;
+  z-index: 11;
+  inset: 0;
+  overflow: hidden;
+  opacity: 0;
+  pointer-events: none;
+}
+.whale-frame, .whale-water, .whale-light, .whale-bubbles, .whale-veil {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+.whale-frame {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center;
+  will-change: opacity, transform;
+}
+.whale-animation {
+  position: absolute;
+  z-index: 2;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  opacity: 0;
+  pointer-events: none;
+}
+.whale-stage.sequence-ready .whale-animation {
+  opacity: 1;
+}
+.whale-stage.sequence-ready .whale-frame {
+  opacity: 0 !important;
+}
+.whale-stage.sequence-ready .whale-water,
+.whale-stage.sequence-ready .whale-veil,
+.whale-stage.sequence-ready .whale-light,
+.whale-stage.sequence-ready .whale-bubbles {
+  display: none;
+}
+.whale-blacktip {
+  z-index: 0;
+}
+.whale-whales {
+  z-index: 1;
+  opacity: 0;
+  transform: scale(1.2) translateY(8%);
+}
+.whale-water {
+  z-index: 3;
+  opacity: 0;
+  background: linear-gradient(180deg, #d7fff8ad 0%, #9ce5f575 30%, #2cb7d866 70%, #07669f44 100%);
+  mix-blend-mode: screen;
+  will-change: opacity;
+}
+.whale-veil {
+  z-index: 4;
+  opacity: 0;
+  background: linear-gradient(180deg, #efffffaa, #83d9ed44 55%, #0c8ab755), url('../assets/shark-intro-waterline-v1.png') center / cover no-repeat;
+  mix-blend-mode: screen;
+  will-change: opacity, transform;
+}
+.whale-light {
+  z-index: 5;
+  opacity: 0;
+  background: radial-gradient(ellipse at 50% 5%, #fffff7 0, #e8ffffed 22%, #b7f4f6bd 48%, transparent 85%);
+  mix-blend-mode: screen;
+  will-change: opacity;
+}
+.whale-bubbles {
+  z-index: 6;
+  opacity: 0;
+  background: radial-gradient(circle at 13% 88%, #eaffff9e 0 3px, transparent 5px), radial-gradient(circle at 32% 77%, #eaffffbd 0 5px, transparent 7px), radial-gradient(circle at 67% 89%, #eaffffaf 0 3px, transparent 5px), radial-gradient(circle at 86% 72%, #eaffffaf 0 6px, transparent 9px);
+  background-size: 32vw 38vh;
+  will-change: opacity, transform;
+}
+@keyframes cue {
+  0%,100% {
+    transform: translateY(0);
+    opacity: .9;
+  }
+  62% {
+    transform: translateY(12px);
+    opacity: .25;
+  }
+}
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0,0,0,0);
+  white-space: nowrap;
+  border: 0;
+}
+.reduced-ending {
+  display: none;
+}
+.reduced-whales {
+  display: none;
+}
+/* Still illustrations replace the scroll animation when motion is reduced. */
+@media (prefers-reduced-motion: reduce) {
+  .sound-toggle {
+    display: none;
+  }
+  .journey {
+    height: auto;
+  }
+  .stage {
+    position: relative;
+    height: 100svh;
+  }
+  .surface {
+    opacity: 1 !important;
+    transform: none !important;
+  }
+  .mask-group {
+    transform: translate(-50%, -50%) scale(.72) !important;
+    opacity: 1 !important;
+  }
+  .waterline, .reef, .shark, .wash, .sparkle-field, .spray, .entry-splash, .bubbles, .vignette, .cue {
+    display: none;
+  }
+  .reduced-ending {
+    display: block;
+    height: 100svh;
+    background: url('../assets/shark-scrollworld-style-frame-v1.png') center / cover no-repeat;
+  }
+  .whale-stage {
+    display: none;
+  }
+  .whale-blacktip, .whale-water, .whale-veil, .whale-light, .whale-bubbles {
+    display: none;
+  }
+  .whale-whales {
+    opacity: 1 !important;
+    transform: none !important;
+  }
+  .reduced-whales {
+    display: block;
+    height: 100svh;
+    background: url('../assets/storyboard/shark-storyboard-whale-sharks-top-v3.png') center / cover no-repeat;
+  }
+}

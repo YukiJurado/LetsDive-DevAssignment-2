@@ -14,4 +14,6 @@ The professor's [Seedance 2.5 announcement](https://thomasmore.instructure.com/c
 4. Test one short clip or transition at low cost first. Check slow scrolling, fast scrolling, and reverse scrolling in the website before generating the rest of the story.
 5. Record the chosen source frame, destination frame, prompt, model/settings, output file, and what failed or worked. Keep generated video separate from storyboard stills.
 
-The current website uses stills for the blacktip-to-whale-shark transition. It is a timing prototype, not proof of a seamless video join.
+The first test is now in `assets/video/blacktip-to-whales-test-v1.mp4`: Seedance 2.5, 12 seconds, 16:9, 720p, start/end image keyframes. The website scrolls through 120 JPEG frames exported from that clip in `assets/video/blacktip-to-whales-frames/`; direct MP4 seeking was unreliable in the in-app browser. The source images are `assets/shark-scrollworld-style-frame-v1.png` and `assets/storyboard/shark-storyboard-whale-sharks-top-v3.png`. Its watercolor water wash covers the handoff, and the final frames show three whale sharks from above. This preview is still a production test, so inspect slow, fast, and reverse scrolling before choosing it as a final shot.
+
+Separate Magnific sound effects are in `assets/audio/`: `splash-entry.mp3`, `underwater-ambience.mp3`, and `shark-glide.mp3`. The visitor must turn sound on with the top-right button. Ambient sound loops under the water; splash and glide play at their scene boundaries. No music or dialogue is used.
