@@ -410,6 +410,22 @@ body {
 .whale-hammer-stage.sequence-ready .whale-hammer-fallback {
   opacity: 0;
 }
+/* User-supplied continuation from the hammerhead close-up to the great white. */
+.hammer-greatwhite-stage {
+  position: absolute;
+  z-index: 14;
+  inset: 0;
+  overflow: hidden;
+  opacity: 0;
+  pointer-events: none;
+  will-change: opacity;
+}
+.hammer-greatwhite-animation {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center;
+}
 /* Deeper storyboard scenes share one moving body of water. */
 .deep-stage {
   position: absolute;
@@ -558,7 +574,7 @@ body {
   .blacktip-stage, .whale-stage {
     display: none;
   }
-  .whale-hammer-stage {
+  .whale-hammer-stage, .hammer-greatwhite-stage {
     display: none;
   }
   .deep-stage {

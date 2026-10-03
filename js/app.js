@@ -29,6 +29,8 @@
   const firstHandoffWash = q('.first-handoff-wash');
   const whaleHammerStage = q('.whale-hammer-stage');
   const hammerAnimation = q('.hammer-animation');
+  const hammerGreatWhiteStage = q('.hammer-greatwhite-stage');
+  const hammerGreatWhiteAnimation = q('.hammer-greatwhite-animation');
   const deepStage = q('.deep-stage');
   const greatWhiteBelly = q('.great-white-belly');
   const greatWhiteEye = q('.great-white-eye');
@@ -121,6 +123,7 @@
   const showWhaleFrame = setupFrameSequence(whaleAnimation, whaleStage, 'assets/video/blacktip-to-whales-frames', 120);
   const showBlacktipFrame = setupFrameSequence(blacktipAnimation, blacktipStage, 'assets/video/blacktip-reef-user-frames', 121);
   const showHammerFrame = setupFrameSequence(hammerAnimation, whaleHammerStage, 'assets/video/whales-to-hammerhead-frames', 120);
+  const showHammerGreatWhiteFrame = setupFrameSequence(hammerGreatWhiteAnimation, hammerGreatWhiteStage, 'assets/video/hammerhead-to-great-white-user-frames', 277);
   function render(progress) {
     const p = clamp(progress);
     const approach = span(p, .04, .57);
@@ -173,15 +176,15 @@
     const drift = Math.sin(p * Math.PI * 8) * .65;
     setOpacity(greatWhiteBelly, pulse(p, .26, .32, .37, .42));
     setOpacity(greatWhiteEye, pulse(p, .35, .41, .45, .50));
-    setOpacity(greatWhite, span(p, .46, .53) * (1 - span(p, .59, .66)));
-    setOpacity(sixgill, span(p, .60, .67) * (1 - span(p, .73, .79)));
+    setOpacity(greatWhite, span(p, .46, .53) * (1 - span(p, .625, .69)));
+    setOpacity(sixgill, span(p, .635, .70) * (1 - span(p, .73, .79)));
     setOpacity(tooth, span(p, .74, .80) * (1 - span(p, .83, .86)));
     setOpacity(mouth, span(p, .843, .865) * (1 - span(p, .89, .91)));
     setOpacity(suspense, span(p, .90, .94) * (1 - span(p, .955, .985)));
     setOpacity(calmReturn, span(p, .96, .995));
     greatWhiteBelly.style.transform = `translateX(${(20 - 18 * span(p, .26, .40)).toFixed(2)}%) scale(1.28)`;
     greatWhiteEye.style.transform = `translateX(${(8 - 8 * span(p, .34, .47)).toFixed(2)}%) scale(1.20)`;
-    greatWhite.style.transform = `translate(${(8 - 14 * span(p, .46, .66)).toFixed(2)}%, ${(5 * span(p, .46, .66) + drift).toFixed(2)}%) scale(${(1.12 + .12 * span(p, .46, .66)).toFixed(3)})`;
+    greatWhite.style.transform = `translateY(${(1.5 * span(p, .625, .69)).toFixed(2)}%) scale(${(1 + .03 * span(p, .625, .69)).toFixed(3)})`;
     sixgill.style.transform = `translate(${(7 - 12 * span(p, .60, .79)).toFixed(2)}%, ${(4 * span(p, .60, .79) + drift).toFixed(2)}%) scale(${(.96 + .25 * span(p, .60, .79)).toFixed(3)})`;
     tooth.style.transform = `translateY(${(7 - 7 * span(p, .74, .86)).toFixed(2)}%) scale(${(1.17 - .11 * span(p, .74, .86)).toFixed(3)})`;
     mouth.style.transform = `scale(${(.72 + 1.38 * span(p, .843, .91)).toFixed(3)})`;
@@ -199,6 +202,7 @@
     showBlacktipFrame((progress - .205) / .115);
     renderWhales((progress - .33) / .12);
     showHammerFrame((progress - .45) / .10);
+    showHammerGreatWhiteFrame((progress - .55) / .26);
     renderDeep((progress - .55) / .45);
     // Look upward as the blacktip leaves, then let the watercolor light cover the handoff.
     setOpacity(blacktipStage, span(progress, .195, .213) * (1 - span(progress, .339, .350)));
@@ -206,6 +210,8 @@
     setOpacity(whaleStage, span(progress, .337, .351) * (1 - span(progress, .475, .49)));
     setOpacity(whaleHammerStage, span(progress, .445, .475) * (1 - span(progress, .585, .60)));
     setOpacity(deepStage, span(progress, .545, .585));
+    // Keep the existing hammerhead arrival, then follow the user's clip into the great white.
+    setOpacity(hammerGreatWhiteStage, span(progress, .547, .557) * (1 - span(progress, .806, .828)));
     setOpacity(firstHandoffWash, pulse(progress, .320, .329, .343, .355));
     firstHandoffWash.style.transform = `translateY(${(8 * span(progress, .320, .355)).toFixed(2)}%) scale(${(1.02 + .08 * span(progress, .320, .355)).toFixed(3)})`;
     updateSound(progress);
