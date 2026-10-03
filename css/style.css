@@ -91,10 +91,18 @@ body {
   opacity: 0;
   transform: scale(1.06);
 }
-.shark {
+.blacktip-sprite {
+  position: absolute;
   z-index: 3;
+  left: 66%;
+  top: 46%;
+  width: min(58vw, 1040px);
+  height: auto;
   opacity: 0;
-  transform: scale(1.05);
+  transform: translate(-50%, -50%) translate3d(60vw, 3vh, 0) scale(.84);
+  transform-origin: center;
+  pointer-events: none;
+  will-change: opacity, transform;
 }
 .wash {
   z-index: 4;
@@ -357,6 +365,17 @@ body {
   background-size: 32vw 38vh;
   will-change: opacity, transform;
 }
+.first-handoff-wash {
+  position: absolute;
+  z-index: 7;
+  inset: -8%;
+  pointer-events: none;
+  opacity: 0;
+  background: radial-gradient(ellipse at 51% 49%, #dbffffdf 0%, #8fd7ea9c 46%, transparent 78%), linear-gradient(165deg, transparent 24%, #d7ffff6e 52%, transparent 76%);
+  backdrop-filter: blur(3px);
+  mix-blend-mode: screen;
+  will-change: opacity, transform;
+}
 /* The camera follows the whale sharks down to the first hammerhead. */
 .whale-hammer-stage {
   position: absolute;
@@ -455,8 +474,10 @@ body {
   will-change: opacity, transform;
 }
 @media (max-aspect-ratio: 3/4) {
-  .hammerhead-frame {
-    object-position: 40% center;
+  .blacktip-sprite {
+    left: 66%;
+    top: 46%;
+    width: 115vw;
   }
   .great-white-frame, .sixgill-frame {
     object-position: 28% center;
@@ -523,7 +544,7 @@ body {
     transform: translate(-50%, -50%) scale(.72) !important;
     opacity: 1 !important;
   }
-  .waterline, .reef, .shark, .wash, .sparkle-field, .spray, .entry-splash, .bubbles, .vignette, .cue {
+  .waterline, .reef, .blacktip-sprite, .wash, .sparkle-field, .spray, .entry-splash, .bubbles, .vignette, .cue {
     display: none;
   }
   .reduced-ending {

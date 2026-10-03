@@ -6,7 +6,7 @@
   const surface = q('.surface');
   const waterline = q('.waterline');
   const reef = q('.reef');
-  const shark = q('.shark');
+  const blacktipSprite = q('.blacktip-sprite');
   const mask = q('.mask-group');
   const title = q('.title');
   const drops = [...document.querySelectorAll('.drop')];
@@ -25,10 +25,10 @@
   const whaleLight = q('.whale-light');
   const whaleBubbles = q('.whale-bubbles');
   const whaleAnimation = q('.whale-animation');
+  const firstHandoffWash = q('.first-handoff-wash');
   const whaleHammerStage = q('.whale-hammer-stage');
   const hammerAnimation = q('.hammer-animation');
   const deepStage = q('.deep-stage');
-  const hammerhead = q('.hammerhead-frame');
   const greatWhiteBelly = q('.great-white-belly');
   const greatWhiteEye = q('.great-white-eye');
   const greatWhite = q('.great-white-frame');
@@ -72,20 +72,20 @@
     sound.play().catch(() => {});
   }
   function updateSound(progress) {
-    const underwater = progress >= .34;
+    const underwater = progress >= .16;
     const depth = span(progress, .69, .82);
     const silence = 1 - .92 * pulse(progress, .925, .94, .965, .99);
-    ambience.volume = .3 * span(progress, .34, .43) * (1 - .75 * depth) * silence;
+    ambience.volume = .3 * span(progress, .16, .25) * (1 - .75 * depth) * silence;
     deepAmbience.volume = .22 * depth * silence;
     if (soundEnabled && underwater) {
       if (ambience.paused) ambience.play().catch(() => {});
       if (deepAmbience.paused) deepAmbience.play().catch(() => {});
-      if (lastProgress < .34) playEffect(splash);
-      if (lastProgress < .32 && progress >= .32) playEffect(glide);
+      if (lastProgress < .16 && progress >= .16) playEffect(splash);
+      if (lastProgress < .24 && progress >= .24) playEffect(glide);
       if (lastProgress < .51 && progress >= .51) playEffect(glide);
       if (lastProgress < .75 && progress >= .75) playEffect(glide);
       if (lastProgress < .82 && progress >= .82) playEffect(glide);
-      if (lastProgress < .92 && progress >= .92) playEffect(inkImpact);
+      if (lastProgress < .93 && progress >= .93) playEffect(inkImpact);
     } else {
       ambience.pause();
       deepAmbience.pause();
@@ -124,15 +124,15 @@
     const approach = span(p, .04, .57);
     const through = span(p, .40, .75);
     const reefIn = span(p, .60, .82);
-    const sharkIn = span(p, .84, .98);
+    const swimIn = span(p, .78, .995);
     setOpacity(surface, 1 - span(p, .43, .67));
     surface.style.transform = `scale(${(1.06 + .08 * span(p, 0, .53)).toFixed(3)}) translateY(${(2.5 * span(p, .05, .53)).toFixed(2)}%)`;
     setOpacity(waterline, pulse(p, .40, .58, .68, .81));
     waterline.style.transform = `scale(${(1.08 - .08 * through).toFixed(3)}) translateY(${(-4 * through).toFixed(2)}%)`;
-    setOpacity(reef, reefIn * (1 - span(p, .87, 1)));
+    setOpacity(reef, reefIn);
     reef.style.transform = `scale(${(1.06 - .06 * span(p, .60, .91)).toFixed(3)})`;
-    setOpacity(shark, sharkIn);
-    shark.style.transform = `scale(${(1.05 - .05 * sharkIn).toFixed(3)})`;
+    setOpacity(blacktipSprite, span(p, .81, .89));
+    blacktipSprite.style.transform = `translate(-50%, -50%) translate3d(${(60 - 60 * swimIn).toFixed(2)}vw, ${(3 - 3 * swimIn + .7 * Math.sin(swimIn * Math.PI * 2)).toFixed(2)}vh, 0) scale(${(.84 + .16 * swimIn).toFixed(3)})`;
     mask.style.transform = `translate(-50%, -50%) translateY(${(6 - 6 * approach).toFixed(2)}vh) rotate(${(-5 + 5 * approach).toFixed(2)}deg) scale(${(.58 + 2.83 * approach).toFixed(3)})`;
     setOpacity(mask, 1 - span(p, .53, .71));
     setOpacity(title, 1 - span(p, .18, .37));
@@ -171,7 +171,6 @@
   function renderDeep(progress) {
     const p = clamp(progress);
     const drift = Math.sin(p * Math.PI * 8) * .65;
-    setOpacity(hammerhead, 1 - span(p, .13, .23));
     setOpacity(greatWhiteBelly, pulse(p, .26, .32, .37, .42));
     setOpacity(greatWhiteEye, pulse(p, .35, .41, .45, .50));
     setOpacity(greatWhite, span(p, .46, .53) * (1 - span(p, .59, .66)));
@@ -180,7 +179,6 @@
     setOpacity(mouth, span(p, .843, .865) * (1 - span(p, .89, .91)));
     setOpacity(suspense, span(p, .90, .94) * (1 - span(p, .955, .985)));
     setOpacity(calmReturn, span(p, .96, .995));
-    hammerhead.style.transform = `translate(${(-9 * span(p, 0, .23)).toFixed(2)}%, ${(8 * span(p, 0, .23) + drift).toFixed(2)}%) scale(${(1 + .15 * span(p, 0, .23)).toFixed(3)})`;
     greatWhiteBelly.style.transform = `translateX(${(20 - 18 * span(p, .26, .40)).toFixed(2)}%) scale(1.28)`;
     greatWhiteEye.style.transform = `translateX(${(8 - 8 * span(p, .34, .47)).toFixed(2)}%) scale(1.20)`;
     greatWhite.style.transform = `translate(${(8 - 14 * span(p, .46, .66)).toFixed(2)}%, ${(5 * span(p, .46, .66) + drift).toFixed(2)}%) scale(${(1.12 + .12 * span(p, .46, .66)).toFixed(3)})`;
@@ -201,9 +199,12 @@
     renderWhales((progress - .29) / .16);
     showHammerFrame((progress - .45) / .10);
     renderDeep((progress - .55) / .45);
-    setOpacity(whaleStage, span(progress, .28, .29) * (1 - span(progress, .45, .46)));
-    setOpacity(whaleHammerStage, span(progress, .45, .46) * (1 - span(progress, .54, .55)));
-    setOpacity(deepStage, span(progress, .54, .55));
+    // Keep the outgoing view beneath the incoming one until the dissolve is complete.
+    setOpacity(whaleStage, span(progress, .275, .31) * (1 - span(progress, .475, .49)));
+    setOpacity(whaleHammerStage, span(progress, .445, .475) * (1 - span(progress, .585, .60)));
+    setOpacity(deepStage, span(progress, .545, .585));
+    setOpacity(firstHandoffWash, pulse(progress, .278, .292, .297, .315) * .82);
+    firstHandoffWash.style.transform = `translateY(${(-5 * span(progress, .278, .315)).toFixed(2)}%)`;
     updateSound(progress);
   };
   // A short time-based glide removes wheel/touchpad jitter while keeping reverse scroll exact.

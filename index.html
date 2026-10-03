@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Let's Dive — watercolor shark journey</title>
   <!-- Layout and watercolor scene styling live in css/style.css. -->
-  <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="css/style.css?v=blacktip-2">
 </head>
 <body>
   <button class="sound-toggle" type="button" aria-label="Turn sound on" aria-pressed="false" title="Turn sound on">
@@ -20,7 +20,7 @@
       <img class="scene surface" src="assets/shark-intro-ocean-surface-v1.png" alt="A watercolor sea sparkles beneath a pale sky.">
       <img class="scene waterline" src="assets/shark-intro-waterline-v1.png" alt="">
       <img class="scene reef" src="assets/shark-intro-empty-reef-v1.png" alt="">
-      <img class="scene shark" src="assets/shark-scrollworld-style-frame-v1.png" alt="A blacktip reef shark glides into a bright coral reef.">
+      <img class="blacktip-sprite" src="assets/blacktip-cutout-v1.png" alt="A blacktip reef shark glides into a bright coral reef.">
       <div class="wash" aria-hidden="true"></div>
       <div class="sparkle-field" aria-hidden="true"></div>
       <div class="vignette" aria-hidden="true"></div>
@@ -44,13 +44,13 @@
         <div class="whale-veil" aria-hidden="true"></div>
         <div class="whale-light" aria-hidden="true"></div>
         <div class="whale-bubbles" aria-hidden="true"></div>
+        <div class="first-handoff-wash" aria-hidden="true"></div>
       </div>
       <div class="whale-hammer-stage" aria-hidden="true">
         <img class="whale-hammer-fallback" src="assets/storyboard/shark-storyboard-whale-sharks-top-v3.png" alt="">
         <img class="hammer-animation" src="assets/video/whales-to-hammerhead-frames/frame-001.jpg" alt="">
       </div>
       <div class="deep-stage" aria-hidden="true">
-        <img class="deep-frame hammerhead-frame" src="assets/storyboard/shark-storyboard-hammerhead-approach-v1.png" alt="A hammerhead approaches through blue water.">
         <img class="deep-frame great-white-belly" src="assets/storyboard/shark-storyboard-great-white-body-v3.png" alt="">
         <img class="deep-frame great-white-eye" src="assets/storyboard/shark-storyboard-great-white-body-v3.png" alt="">
         <img class="deep-frame great-white-frame" src="assets/storyboard/shark-storyboard-great-white-body-v3.png" alt="A great white glides through colder, darker water.">
@@ -73,6 +73,6 @@
   <script src="https://cdn.jsdelivr.net/npm/gsap@3.15.0/dist/gsap.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/gsap@3.15.0/dist/ScrollTrigger.min.js"></script>
   <!-- js/app.js reads scroll position and moves the scene layers. -->
-  <script src="js/app.js"></script>
+  <script src="js/app.js?v=blacktip-2"></script>
 </body>
 </html>
