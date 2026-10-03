@@ -6,8 +6,8 @@
   const surface = q('.surface');
   const waterline = q('.waterline');
   const reef = q('.reef');
-  const blacktipSprite = q('.blacktip-sprite');
-  const blacktipTail = q('.blacktip-tail');
+  const blacktipStage = q('.blacktip-stage');
+  const blacktipAnimation = q('.blacktip-animation');
   const mask = q('.mask-group');
   const title = q('.title');
   const drops = [...document.querySelectorAll('.drop')];
@@ -119,23 +119,19 @@
     };
   }
   const showWhaleFrame = setupFrameSequence(whaleAnimation, whaleStage, 'assets/video/blacktip-to-whales-frames', 120);
+  const showBlacktipFrame = setupFrameSequence(blacktipAnimation, blacktipStage, 'assets/video/blacktip-reef-user-frames', 121);
   const showHammerFrame = setupFrameSequence(hammerAnimation, whaleHammerStage, 'assets/video/whales-to-hammerhead-frames', 120);
   function render(progress) {
     const p = clamp(progress);
     const approach = span(p, .04, .57);
     const through = span(p, .40, .75);
     const reefIn = span(p, .60, .82);
-    const swimIn = span(p, .69, .955);
-    const swimBeat = Math.sin(swimIn * Math.PI * 6);
     setOpacity(surface, 1 - span(p, .43, .67));
     surface.style.transform = `scale(${(1.06 + .08 * span(p, 0, .53)).toFixed(3)}) translateY(${(2.5 * span(p, .05, .53)).toFixed(2)}%)`;
     setOpacity(waterline, pulse(p, .40, .58, .68, .81));
     waterline.style.transform = `scale(${(1.08 - .08 * through).toFixed(3)}) translateY(${(-4 * through).toFixed(2)}%)`;
     setOpacity(reef, reefIn);
     reef.style.transform = `scale(${(1.06 - .06 * span(p, .60, .91)).toFixed(3)})`;
-    setOpacity(blacktipSprite, span(p, .76, .85));
-    blacktipSprite.style.transform = `translate(-50%, -50%) translate3d(${(76 - 76 * swimIn).toFixed(2)}vw, ${(2.5 - 2.5 * swimIn + .55 * swimBeat).toFixed(2)}vh, 0) rotate(${(.3 * swimBeat).toFixed(2)}deg) scale(${(.83 + .17 * swimIn).toFixed(3)})`;
-    blacktipTail.style.transform = `rotate(${(5.5 * swimBeat).toFixed(2)}deg) scaleX(${(1 - .04 * Math.abs(swimBeat)).toFixed(3)})`;
     mask.style.transform = `translate(-50%, -50%) translateY(${(6 - 6 * approach).toFixed(2)}vh) rotate(${(-5 + 5 * approach).toFixed(2)}deg) scale(${(.58 + 2.83 * approach).toFixed(3)})`;
     setOpacity(mask, 1 - span(p, .53, .71));
     setOpacity(title, 1 - span(p, .18, .37));
@@ -157,7 +153,8 @@
   }
   function renderWhales(progress) {
     const p = clamp(progress);
-    showWhaleFrame(p);
+    // The new reef shot owns the blacktip; join this older clip after its shark has left.
+    showWhaleFrame(.42 + .58 * p);
     const lookUp = span(p, .06, .56);
     const reveal = span(p, .48, .74);
     setOpacity(whaleBlacktip, 1 - reveal);
@@ -199,15 +196,18 @@
   }
   const renderJourney = (progress) => {
     render(progress / .29);
-    renderWhales((progress - .29) / .16);
+    showBlacktipFrame((progress - .205) / .115);
+    renderWhales((progress - .33) / .12);
     showHammerFrame((progress - .45) / .10);
     renderDeep((progress - .55) / .45);
-    // Keep the outgoing view beneath the incoming one until the dissolve is complete.
-    setOpacity(whaleStage, span(progress, .275, .31) * (1 - span(progress, .475, .49)));
+    // Look upward as the blacktip leaves, then let the watercolor light cover the handoff.
+    setOpacity(blacktipStage, span(progress, .195, .213) * (1 - span(progress, .339, .350)));
+    blacktipStage.style.transform = `scale(${(1 + .12 * span(progress, .310, .349)).toFixed(3)}) translateY(${(9 * span(progress, .310, .349)).toFixed(2)}%)`;
+    setOpacity(whaleStage, span(progress, .337, .351) * (1 - span(progress, .475, .49)));
     setOpacity(whaleHammerStage, span(progress, .445, .475) * (1 - span(progress, .585, .60)));
     setOpacity(deepStage, span(progress, .545, .585));
-    setOpacity(firstHandoffWash, pulse(progress, .278, .292, .297, .315) * .82);
-    firstHandoffWash.style.transform = `translateY(${(-5 * span(progress, .278, .315)).toFixed(2)}%)`;
+    setOpacity(firstHandoffWash, pulse(progress, .320, .329, .343, .355));
+    firstHandoffWash.style.transform = `translateY(${(8 * span(progress, .320, .355)).toFixed(2)}%) scale(${(1.02 + .08 * span(progress, .320, .355)).toFixed(3)})`;
     updateSound(progress);
   };
   // A short time-based glide removes wheel/touchpad jitter while keeping reverse scroll exact.

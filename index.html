@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Let's Dive — watercolor shark journey</title>
   <!-- Layout and watercolor scene styling live in css/style.css. -->
-  <link rel="stylesheet" href="css/style.css?v=blacktip-swim-1">
+  <link rel="stylesheet" href="css/style.css?v=user-blacktip-1">
 </head>
 <body>
   <button class="sound-toggle" type="button" aria-label="Turn sound on" aria-pressed="false" title="Turn sound on">
@@ -20,10 +20,6 @@
       <img class="scene surface" src="assets/shark-intro-ocean-surface-v1.png" alt="A watercolor sea sparkles beneath a pale sky.">
       <img class="scene waterline" src="assets/shark-intro-waterline-v1.png" alt="">
       <img class="scene reef" src="assets/shark-intro-empty-reef-v1.png" alt="">
-      <div class="blacktip-sprite" role="img" aria-label="A blacktip reef shark swims into a bright coral reef.">
-        <img class="blacktip-body" src="assets/blacktip-cutout-v1.png" alt="">
-        <img class="blacktip-tail" src="assets/blacktip-cutout-v1.png" alt="">
-      </div>
       <div class="wash" aria-hidden="true"></div>
       <div class="sparkle-field" aria-hidden="true"></div>
       <div class="vignette" aria-hidden="true"></div>
@@ -39,6 +35,9 @@
       <div class="entry-splash" aria-hidden="true"></div>
       <div class="bubbles" aria-hidden="true"><i class="bubble"></i><i class="bubble"></i><i class="bubble"></i><i class="bubble"></i><i class="bubble"></i></div>
       <div class="cue" aria-hidden="true"></div>
+      <div class="blacktip-stage" role="img" aria-label="A blacktip reef shark swims across a bright watercolor coral reef and recedes into open water.">
+        <img class="blacktip-animation" src="assets/video/blacktip-reef-user-frames/frame-001.jpg" alt="">
+      </div>
       <div class="whale-stage" aria-hidden="true">
         <img class="whale-frame whale-blacktip" src="assets/shark-scrollworld-style-frame-v1.png" alt="">
         <img class="whale-frame whale-whales" src="assets/storyboard/shark-storyboard-whale-sharks-top-v3.png" alt="Looking down through sunlit water at the spotted backs of three whale sharks.">
@@ -47,8 +46,8 @@
         <div class="whale-veil" aria-hidden="true"></div>
         <div class="whale-light" aria-hidden="true"></div>
         <div class="whale-bubbles" aria-hidden="true"></div>
-        <div class="first-handoff-wash" aria-hidden="true"></div>
       </div>
+      <div class="first-handoff-wash" aria-hidden="true"></div>
       <div class="whale-hammer-stage" aria-hidden="true">
         <img class="whale-hammer-fallback" src="assets/storyboard/shark-storyboard-whale-sharks-top-v3.png" alt="">
         <img class="hammer-animation" src="assets/video/whales-to-hammerhead-frames/frame-001.jpg" alt="">
@@ -76,6 +75,6 @@
   <script src="https://cdn.jsdelivr.net/npm/gsap@3.15.0/dist/gsap.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/gsap@3.15.0/dist/ScrollTrigger.min.js"></script>
   <!-- js/app.js reads scroll position and moves the scene layers. -->
-  <script src="js/app.js?v=blacktip-swim-1"></script>
+  <script src="js/app.js?v=user-blacktip-1"></script>
 </body>
 </html>
