@@ -7,6 +7,7 @@
   const waterline = q('.waterline');
   const reef = q('.reef');
   const blacktipSprite = q('.blacktip-sprite');
+  const blacktipTail = q('.blacktip-tail');
   const mask = q('.mask-group');
   const title = q('.title');
   const drops = [...document.querySelectorAll('.drop')];
@@ -124,15 +125,17 @@
     const approach = span(p, .04, .57);
     const through = span(p, .40, .75);
     const reefIn = span(p, .60, .82);
-    const swimIn = span(p, .78, .995);
+    const swimIn = span(p, .69, .955);
+    const swimBeat = Math.sin(swimIn * Math.PI * 6);
     setOpacity(surface, 1 - span(p, .43, .67));
     surface.style.transform = `scale(${(1.06 + .08 * span(p, 0, .53)).toFixed(3)}) translateY(${(2.5 * span(p, .05, .53)).toFixed(2)}%)`;
     setOpacity(waterline, pulse(p, .40, .58, .68, .81));
     waterline.style.transform = `scale(${(1.08 - .08 * through).toFixed(3)}) translateY(${(-4 * through).toFixed(2)}%)`;
     setOpacity(reef, reefIn);
     reef.style.transform = `scale(${(1.06 - .06 * span(p, .60, .91)).toFixed(3)})`;
-    setOpacity(blacktipSprite, span(p, .81, .89));
-    blacktipSprite.style.transform = `translate(-50%, -50%) translate3d(${(60 - 60 * swimIn).toFixed(2)}vw, ${(3 - 3 * swimIn + .7 * Math.sin(swimIn * Math.PI * 2)).toFixed(2)}vh, 0) scale(${(.84 + .16 * swimIn).toFixed(3)})`;
+    setOpacity(blacktipSprite, span(p, .76, .85));
+    blacktipSprite.style.transform = `translate(-50%, -50%) translate3d(${(76 - 76 * swimIn).toFixed(2)}vw, ${(2.5 - 2.5 * swimIn + .55 * swimBeat).toFixed(2)}vh, 0) rotate(${(.3 * swimBeat).toFixed(2)}deg) scale(${(.83 + .17 * swimIn).toFixed(3)})`;
+    blacktipTail.style.transform = `rotate(${(5.5 * swimBeat).toFixed(2)}deg) scaleX(${(1 - .04 * Math.abs(swimBeat)).toFixed(3)})`;
     mask.style.transform = `translate(-50%, -50%) translateY(${(6 - 6 * approach).toFixed(2)}vh) rotate(${(-5 + 5 * approach).toFixed(2)}deg) scale(${(.58 + 2.83 * approach).toFixed(3)})`;
     setOpacity(mask, 1 - span(p, .53, .71));
     setOpacity(title, 1 - span(p, .18, .37));

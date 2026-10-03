@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Let's Dive — watercolor shark journey</title>
   <!-- Layout and watercolor scene styling live in css/style.css. -->
-  <link rel="stylesheet" href="css/style.css?v=blacktip-2">
+  <link rel="stylesheet" href="css/style.css?v=blacktip-swim-1">
 </head>
 <body>
   <button class="sound-toggle" type="button" aria-label="Turn sound on" aria-pressed="false" title="Turn sound on">
@@ -20,7 +20,10 @@
       <img class="scene surface" src="assets/shark-intro-ocean-surface-v1.png" alt="A watercolor sea sparkles beneath a pale sky.">
       <img class="scene waterline" src="assets/shark-intro-waterline-v1.png" alt="">
       <img class="scene reef" src="assets/shark-intro-empty-reef-v1.png" alt="">
-      <img class="blacktip-sprite" src="assets/blacktip-cutout-v1.png" alt="A blacktip reef shark glides into a bright coral reef.">
+      <div class="blacktip-sprite" role="img" aria-label="A blacktip reef shark swims into a bright coral reef.">
+        <img class="blacktip-body" src="assets/blacktip-cutout-v1.png" alt="">
+        <img class="blacktip-tail" src="assets/blacktip-cutout-v1.png" alt="">
+      </div>
       <div class="wash" aria-hidden="true"></div>
       <div class="sparkle-field" aria-hidden="true"></div>
       <div class="vignette" aria-hidden="true"></div>
@@ -73,6 +76,6 @@
   <script src="https://cdn.jsdelivr.net/npm/gsap@3.15.0/dist/gsap.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/gsap@3.15.0/dist/ScrollTrigger.min.js"></script>
   <!-- js/app.js reads scroll position and moves the scene layers. -->
-  <script src="js/app.js?v=blacktip-2"></script>
+  <script src="js/app.js?v=blacktip-swim-1"></script>
 </body>
 </html>

@@ -16,7 +16,7 @@ The sharks and ocean share one hand-painted watercolor style. The opening mask c
 
 ## Current status
 
-- The full story is navigable, with an independent blacktip cutout, two 12-second frame-matched animated shots, a staged great white reveal, five sound effects, and moving storyboard keyframes for the remaining scenes. Water darkens, particles thin, and the ambience quiets around the ancient vision.
+- The full story is navigable, with a scroll-linked blacktip swim and tail beat, two 12-second frame-matched animated shots, a staged great white reveal, five sound effects, and moving storyboard keyframes for the remaining scenes. Water darkens, particles thin, and the ambience quiets around the ancient vision.
 - The video and deeper scenes are production tests. Review pacing and transitions during slow, fast, and reverse scrolling before producing frame-matched animation for the deeper sharks.
 - Prompt-production references and continuity rules are recorded in [`docs/production-notes.md`](docs/production-notes.md).
 - A live site URL will be added here after deployment.
