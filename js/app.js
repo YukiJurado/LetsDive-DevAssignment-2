@@ -31,6 +31,9 @@
   const hammerAnimation = q('.hammer-animation');
   const hammerGreatWhiteStage = q('.hammer-greatwhite-stage');
   const hammerGreatWhiteAnimation = q('.hammer-greatwhite-animation');
+  const sixgillVideoStage = q('.sixgill-video-stage');
+  const sixgillAnimation = q('.sixgill-animation');
+  const sixgillEntryVeil = q('.sixgill-entry-veil');
   const deepStage = q('.deep-stage');
   const greatWhiteBelly = q('.great-white-belly');
   const greatWhiteEye = q('.great-white-eye');
@@ -88,7 +91,7 @@
       if (lastProgress < .51 && progress >= .51) playEffect(glide);
       if (lastProgress < .75 && progress >= .75) playEffect(glide);
       if (lastProgress < .82 && progress >= .82) playEffect(glide);
-      if (lastProgress < .93 && progress >= .93) playEffect(inkImpact);
+      if (lastProgress < .949 && progress >= .949) playEffect(inkImpact);
     } else {
       ambience.pause();
       deepAmbience.pause();
@@ -124,6 +127,7 @@
   const showBlacktipFrame = setupFrameSequence(blacktipAnimation, blacktipStage, 'assets/video/blacktip-reef-user-frames', 121);
   const showHammerFrame = setupFrameSequence(hammerAnimation, whaleHammerStage, 'assets/video/whales-to-hammerhead-frames', 120);
   const showHammerGreatWhiteFrame = setupFrameSequence(hammerGreatWhiteAnimation, hammerGreatWhiteStage, 'assets/video/hammerhead-to-great-white-user-frames', 277);
+  const showSixgillFrame = setupFrameSequence(sixgillAnimation, sixgillVideoStage, 'assets/video/great-white-to-sixgill-seabed-frames', 481);
   function render(progress) {
     const p = clamp(progress);
     const approach = span(p, .04, .57);
@@ -178,18 +182,18 @@
     setOpacity(greatWhiteEye, pulse(p, .35, .41, .45, .50));
     setOpacity(greatWhite, span(p, .46, .53) * (1 - span(p, .625, .69)));
     setOpacity(sixgill, span(p, .635, .70) * (1 - span(p, .73, .79)));
-    setOpacity(tooth, span(p, .74, .80) * (1 - span(p, .83, .86)));
-    setOpacity(mouth, span(p, .843, .865) * (1 - span(p, .89, .91)));
-    setOpacity(suspense, span(p, .90, .94) * (1 - span(p, .955, .985)));
-    setOpacity(calmReturn, span(p, .96, .995));
+    setOpacity(tooth, span(p, .823, .867) * (1 - span(p, .882, .913)));
+    setOpacity(mouth, span(p, .889, .92) * (1 - span(p, .929, .947)));
+    setOpacity(suspense, span(p, .931, .958) * (1 - span(p, .967, .98)));
+    setOpacity(calmReturn, span(p, .97, .997));
     greatWhiteBelly.style.transform = `translateX(${(20 - 18 * span(p, .26, .40)).toFixed(2)}%) scale(1.28)`;
     greatWhiteEye.style.transform = `translateX(${(8 - 8 * span(p, .34, .47)).toFixed(2)}%) scale(1.20)`;
     greatWhite.style.transform = `translateY(${(1.5 * span(p, .625, .69)).toFixed(2)}%) scale(${(1 + .03 * span(p, .625, .69)).toFixed(3)})`;
     sixgill.style.transform = `translate(${(7 - 12 * span(p, .60, .79)).toFixed(2)}%, ${(4 * span(p, .60, .79) + drift).toFixed(2)}%) scale(${(.96 + .25 * span(p, .60, .79)).toFixed(3)})`;
-    tooth.style.transform = `translateY(${(7 - 7 * span(p, .74, .86)).toFixed(2)}%) scale(${(1.17 - .11 * span(p, .74, .86)).toFixed(3)})`;
-    mouth.style.transform = `scale(${(.72 + 1.38 * span(p, .843, .91)).toFixed(3)})`;
-    suspense.style.transform = `scale(${(1.08 - .07 * span(p, .87, .97)).toFixed(3)})`;
-    calmReturn.style.transform = `scale(${(1.15 - .15 * span(p, .94, 1)).toFixed(3)})`;
+    tooth.style.transform = `translateY(${(7 - 7 * span(p, .823, .913)).toFixed(2)}%) scale(${(1.17 - .11 * span(p, .823, .913)).toFixed(3)})`;
+    mouth.style.transform = `scale(${(.72 + 1.38 * span(p, .889, .947)).toFixed(3)})`;
+    suspense.style.transform = `scale(${(1.08 - .07 * span(p, .929, .98)).toFixed(3)})`;
+    calmReturn.style.transform = `scale(${(1.15 - .15 * span(p, .967, 1)).toFixed(3)})`;
     deepCurrent.style.transform = `translateY(${(-12 * p).toFixed(2)}%)`;
     setOpacity(depthWash, .18 * span(p, .17, .35) + .35 * span(p, .55, .78));
     setOpacity(deepCurrent, .36 * (1 - span(p, .83, .92)) + .12 * span(p, .97, 1));
@@ -203,6 +207,7 @@
     renderWhales((progress - .33) / .12);
     showHammerFrame((progress - .45) / .10);
     showHammerGreatWhiteFrame((progress - .55) / .26);
+    showSixgillFrame((progress - .81) / .115);
     renderDeep((progress - .55) / .45);
     // Look upward as the blacktip leaves, then let the watercolor light cover the handoff.
     setOpacity(blacktipStage, span(progress, .195, .213) * (1 - span(progress, .339, .350)));
@@ -212,6 +217,10 @@
     setOpacity(deepStage, span(progress, .545, .585));
     // Keep the existing hammerhead arrival, then follow the user's clip into the great white.
     setOpacity(hammerGreatWhiteStage, span(progress, .547, .557) * (1 - span(progress, .806, .828)));
+    setOpacity(sixgillVideoStage, span(progress, .815, .829) * (1 - span(progress, .918, .94)));
+    const entryInk = .94 * pulse(progress, .807, .817, .826, .842);
+    const seabedSilt = .76 * pulse(progress, .918, .926, .933, .945);
+    setOpacity(sixgillEntryVeil, Math.max(entryInk, seabedSilt));
     setOpacity(firstHandoffWash, pulse(progress, .320, .329, .343, .355));
     firstHandoffWash.style.transform = `translateY(${(8 * span(progress, .320, .355)).toFixed(2)}%) scale(${(1.02 + .08 * span(progress, .320, .355)).toFixed(3)})`;
     updateSound(progress);

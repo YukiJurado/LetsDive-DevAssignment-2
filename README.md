@@ -2,7 +2,7 @@
 
 A wordless, scroll-driven watercolor journey from a sunlit reef into the deep ocean. Visitors put on a diving mask, meet sharks as the water grows darker, and discover a megalodon fossil that sparks a brief ancient vision.
 
-This repository contains a reversible scroll journey through the complete planned story: the diving-mask intro, a blacktip swimming across the reef, animated transitions to whale sharks and a hammerhead, then the great white, sixgill, megalodon fossil, ancient vision, suspense, and quiet return. Open `index.html` in a browser and scroll down or back up to preview it. The user's hammerhead-to-great-white video now carries the middle of the journey; the scenes after the great white use eased, drifting storyboard keyframes. [`docs/storyboard.md`](docs/storyboard.md) records the intended shots.
+This repository contains a reversible scroll journey through the complete planned story: the diving-mask intro, a blacktip swimming across the reef, animated transitions to whale sharks and a hammerhead, then the great white, sixgill, megalodon fossil, ancient vision, suspense, and quiet return. Open `index.html` in a browser and scroll down or back up to preview it. The user's hammerhead-to-great-white and great-white-to-sixgill videos carry the middle of the journey; a Seedance continuation follows the sixgill across the seabed and past the tooth. [`docs/storyboard.md`](docs/storyboard.md) records the intended shots.
 
 The three files to read are `index.html` (scene layers and links), `css/style.css` (their appearance), and `js/app.js` (scroll timing, animation frames, and optional sound). The HTML loads the CSS in `<head>` and loads the JavaScript after the scene markup. Image and media files live in `assets/`. For a local preview, run `python3 -m http.server 8765` here and open `http://localhost:8765/`.
 
@@ -16,7 +16,7 @@ The sharks and ocean share one hand-painted watercolor style. The opening mask c
 
 ## Current status
 
-- The full story is navigable, with the user-supplied blacktip reef animation, two 12-second transition tests, the user-supplied hammerhead-to-great-white animation, five sound effects, and moving storyboard keyframes for the remaining scenes. Water darkens, particles thin, and the ambience quiets around the ancient vision.
+- The full story is navigable, with the user-supplied blacktip reef animation, two 12-second transition tests, the user-supplied hammerhead-to-great-white and great-white-to-sixgill animations, a Seedance seabed continuation, five sound effects, and moving storyboard keyframes for the megalodon vision and ending. Water darkens, particles thin, and the ambience quiets around the ancient vision.
 - The video and deeper scenes are production tests. Review pacing and transitions during slow, fast, and reverse scrolling before producing frame-matched animation for the deeper sharks.
 - Prompt-production references and continuity rules are recorded in [`docs/production-notes.md`](docs/production-notes.md).
 - A live site URL will be added here after deployment.
