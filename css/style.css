@@ -523,6 +523,21 @@ body {
   filter: blur(12px);
   will-change: opacity;
 }
+.final-title {
+  position: absolute;
+  z-index: 18;
+  left: 50%;
+  bottom: 3%;
+  margin: 0;
+  opacity: 0;
+  transform: translate(-50%, 16px);
+  color: #f2f5e8;
+  text-shadow: 0 2px 15px #081029, 0 0 36px #b2d4f155;
+  font: italic 400 clamp(2.3rem, 5vw, 5rem)/1 Georgia, serif;
+  letter-spacing: .04em;
+  pointer-events: none;
+  will-change: opacity, transform;
+}
 @media (max-aspect-ratio: 3/4) {
   .great-white-frame, .sixgill-frame {
     object-position: 28% center;
@@ -600,7 +615,7 @@ body {
   .blacktip-stage, .whale-stage {
     display: none;
   }
-  .whale-hammer-stage, .hammer-greatwhite-stage, .sixgill-video-stage, .sixgill-entry-veil {
+  .whale-hammer-stage, .hammer-greatwhite-stage, .sixgill-video-stage, .sixgill-entry-veil, .final-title {
     display: none;
   }
   .deep-stage {
@@ -625,5 +640,10 @@ body {
     display: block;
     height: 100svh;
     background: url('../assets/storyboard/shark-storyboard-megalodon-calm-return-v1.png') center / cover no-repeat;
+    padding-top: 85svh;
+    color: #f2f5e8;
+    text-align: center;
+    text-shadow: 0 2px 15px #081029;
+    font: italic 400 clamp(2.3rem, 5vw, 5rem)/1 Georgia, serif;
   }
 }

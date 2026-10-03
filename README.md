@@ -1,8 +1,8 @@
 # Shark ScrollWorld
 
-A wordless, scroll-driven watercolor journey from a sunlit reef into the deep ocean. Visitors put on a diving mask, meet sharks as the water grows darker, and discover a megalodon fossil that sparks a brief ancient vision.
+A mostly wordless, scroll-driven watercolor journey from a sunlit reef into the deep ocean. Visitors put on a diving mask, meet sharks as the water grows darker, and discover a megalodon fossil that sparks a brief ancient vision.
 
-This repository contains a reversible scroll journey through the complete planned story: the diving-mask intro, a blacktip swimming across the reef, animated transitions to whale sharks and a hammerhead, then the great white, sixgill, megalodon fossil, ancient vision, suspense, and quiet return. Open `index.html` in a browser and scroll down or back up to preview it. The user's hammerhead-to-great-white and great-white-to-sixgill videos carry the middle of the journey; a Seedance continuation follows the sixgill across the seabed and past the tooth. [`docs/storyboard.md`](docs/storyboard.md) records the intended shots.
+This repository contains a reversible scroll journey through the complete planned story: the diving-mask intro, a blacktip swimming across the reef, animated transitions to whale sharks and a hammerhead, then the great white, sixgill, megalodon fossil, ancient vision, and quiet return. Open `index.html` in a browser and scroll down or back up to preview it. The user's hammerhead-to-great-white and great-white-to-sixgill videos carry the middle of the journey; a Seedance continuation follows the sixgill from above as it swims past the fossil tooth. [`docs/storyboard.md`](docs/storyboard.md) records the intended shots.
 
 The three files to read are `index.html` (scene layers and links), `css/style.css` (their appearance), and `js/app.js` (scroll timing, animation frames, and optional sound). The HTML loads the CSS in `<head>` and loads the JavaScript after the scene markup. Image and media files live in `assets/`. For a local preview, run `python3 -m http.server 8765` here and open `http://localhost:8765/`.
 
@@ -10,9 +10,9 @@ The preview uses GSAP ScrollTrigger when its CDN scripts are available and falls
 
 ## Story order
 
-Diving mask → blacktip reef shark → whale sharks → hammerheads → great white → sixgill → megalodon fossil and vision → suspense → quiet return.
+Diving mask → blacktip reef shark → whale sharks → hammerheads → great white → top-view sixgill → fossil tooth zoom → megalodon mouth → zoom back out → fini.
 
-The sharks and ocean share one hand-painted watercolor style. The opening mask carries the words “lets dive!”; the underwater story has no on-screen narration. The megalodon is an ancient vision, not a living shark in the present-day ocean.
+The sharks and ocean share one hand-painted watercolor style. The opening mask carries “lets dive!” and the ending says “fini”; the underwater story has no narration. The megalodon is an ancient vision, not a living shark in the present-day ocean.
 
 ## Current status
 
