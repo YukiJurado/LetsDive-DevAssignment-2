@@ -35,3 +35,46 @@ The sixgill entrance uses the user's `after-the-great-white-sha_r0953531 (1).mov
 The selected source clip is `assets/video/great-white-to-sixgill-topdown-v4.mp4` (40 seconds, with 481 scroll frames). The full shot now holds long enough for the sixgill to leave the frame. Magnific extracted its final frame as `assets/storyboard/shark-storyboard-megalodon-matched-tooth-v2.jpg`. That exact image is used for the push-in, the reverse zoom after the mouth vision, and the reduced-motion ending, preserving the fossil's curved ivory crown, striations, and dark root. The previous triangular tooth painting remains in the repository as a planning reference.
 
 The scare avoids a gradual preview of the mouth. The fossil zoom ends and briefly holds; an almost black water veil hides the image while the ambience falls quiet. The mouth then fills the viewport in a very short scroll range and rushes closer, with a separate Magnific-generated underwater lunge sound. The ink covers the close and the camera reverses out to the same fossil. This beat is scroll-driven in both directions; sound remains opt-in and the reduced-motion view shows only the calm still image.
+
+
+## Final pass: intro dive, great white feeding, megalodon ending, captions, and scroll fixes
+
+Everything below was added after the earlier notes. The ending clips use Seedance 2.5 and the feeding restyle uses Magnific's Modify video. Sound was turned off in every generated clip so the site's own opt-in sound stays in control.
+
+### Stills replaced with motion
+
+- **Intro dive.** The first stretch of the page used still paintings that only zoomed (surface, waterline, empty reef) before cutting to the blacktip video. `assets/video/intro-dive-10s-v1.mp4` (Seedance 2.5, 16:9, 720p, 10 s) now runs from `shark-intro-ocean-surface-v1.png` to `shark-intro-empty-reef-v1.png`, exported to 241 frames in `assets/video/intro-dive-frames/`. It plays behind the mask, so the mask, droplets, and "lets dive!" stay as they were. The stills remain underneath as a fallback until the frames load.
+- **Return after the vision.** The old zoomed still of the fossil is gone. `assets/video/return-fossil-10s-v1.mp4` starts on the exact fossil frame (`shark-storyboard-megalodon-matched-tooth-v2.jpg`), pulls back and rises, lets a colossal megalodon silhouette glide past in the dark, then fades to black. Frames are in `assets/video/return-fossil-frames/`.
+
+### Megalodon vision (ending look)
+
+- The ending must match the first fossil tooth seen in the sixgill shot: dark, cold, desaturated, and photographic. A painted-watercolor ending was tried and rejected for that reason, and its files were removed.
+- `assets/video/megalodon-jumpscare-photo-v4.mp4` (Seedance 2.5, 2:1, 10 s) starts on the same fossil frame. The fossil holds to about 4.8 s, the water goes pitch black from about 5 s to 7.2 s, then fossil-toothed jaws with charcoal skin and muted gums burst out and fill the frame. Frames are in `assets/video/megalodon-jumpscare-frames/` (frame 172 is where the jaws first appear).
+- `LUNGE_AT` in `js/app.js` is the scroll point of that frame. The lunge sound, the dark veil, and the clip frames are all keyed to it. If the clip is ever replaced, retime `LUNGE_AT` and the `clipProgress` frame numbers in `renderFinale`.
+- The sixgill video's last frame is the first frame of this clip, so the handoff is a plain short crossfade.
+
+### Great white feeding
+
+- The great white feeding among the school of fish is the first seconds of `great-white-to-sixgill-seabed-frames` (frames 1 to about 72). It was nearly invisible: it had very little scroll and a heavy black ink veil covered the handoff.
+- It now gets about 85vh of scroll, the entry veil is only a light dip, and the empty dark water after it is crossed quickly (`sixgillFrame` in `renderJourney`).
+- Style: the original feeding clip was dark and gritty next to the smooth, bright hammerhead and great-white clips. The first 6 seconds of `assets/video/great-white-to-sixgill-user-v1.mp4` were restyled in Magnific Modify video (MiniMax H3, 2K, 6.6 s) with a prompt asking for the smooth stylized cobalt-blue look and neutral gums, keeping all motion. The result replaces seabed frames 1 to 72 at 12 fps, retimed to 6 s. Frames 65 to 72 fade into the original dark water so the shark leaves cleanly. The original frames remain in git history.
+- The restyled source is not stored in the repo. Only the blended frames are.
+
+### Shark captions
+
+- Each shark has a magical caption: a shimmering gradient name with a twinkling star and a short line. They fade and blur in as the shark appears and dissolve as it leaves. Windows are in `captionWindows` in `js/app.js` (journey progress, except the megalodon, which uses the ending tail).
+- Blacktip Reef Shark, guardian of the sunlit shallows. Whale Shark, gentle giant, freckled like a night sky. Hammerhead, the dreamer who sees the whole sea at once. Great White, hunger of the cold blue, quick as a shadow. Sixgill Shark, a drifter from the twilight deep. Megalodon, the ancient one, still whispering in the dark.
+
+### "fin"
+
+- The title is a large, wide-tracked serif (Cormorant Garamond, with Times and Georgia as fallbacks) that fades in from blur with a drawn line beneath it. Scope letterbox bars slide in during the pull-back and subtle film grain rises. The title sits on pure black, so the return layer stays opaque and the clip's last frame is black.
+
+### Scroll, glitch, and performance fixes
+
+- **Journey length.** The page is 2000vh. Everything before the ending keeps its original pixel pacing (`RATE` in `js/app.js`), and the added scroll plays the return clip and "fin" (`tail`).
+- **Scroll-back glitch.** Frame sequences used to swap an `<img>` source on every scroll step, which can flash blank or show a stale frame, especially when scrolling back over frames the browser has dropped from memory. `setupFrameSequence` now paints frames onto a canvas, keeps the nearest loaded frame on screen if one is not ready, and never goes blank. Forward and reverse scrolling were compared at 21 points across all video layers and rendered identically.
+- **Reduced motion.** Unchanged: the page shows still views, and the final view still uses `shark-storyboard-megalodon-matched-tooth-v2.jpg`.
+
+### Local preview
+
+- Open `index.html` directly, or use the VS Code Live Server extension. No Python or build step is needed.

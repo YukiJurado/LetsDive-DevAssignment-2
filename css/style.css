@@ -54,7 +54,7 @@ body {
 }
 /* The sticky stage stays visible while its long scroll track moves past. */
 .journey {
-  height: 1800vh;
+  height: 2000vh;
 }
 .stage {
   position: sticky;
@@ -394,7 +394,7 @@ body {
   opacity: 0;
   pointer-events: none;
 }
-.whale-hammer-stage img {
+.whale-hammer-stage img, .whale-hammer-stage canvas {
   position: absolute;
   inset: 0;
   width: 100%;
@@ -513,6 +513,23 @@ body {
   object-fit: cover;
   object-position: center;
 }
+/* The megalodon vision plays as scroll-driven frames: fossil, darkness, then the jaws lunge. */
+.megalodon-video-stage {
+  position: absolute;
+  z-index: 15;
+  inset: 0;
+  overflow: hidden;
+  background: #01040c;
+  opacity: 0;
+  pointer-events: none;
+  will-change: opacity, transform;
+}
+.megalodon-animation {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center;
+}
 .sixgill-entry-veil {
   position: absolute;
   z-index: 16;
@@ -532,20 +549,104 @@ body {
   background: radial-gradient(ellipse at 51% 42%, #020613 0%, #01040c 75%);
   will-change: opacity;
 }
-.final-title {
+/* The intro dive: one continuous painted move from the surface into the reef, replacing the old zooming stills. */
+.dive-stage {
   position: absolute;
-  z-index: 18;
-  left: 50%;
-  bottom: 3%;
-  margin: 0;
+  z-index: 3;
+  inset: 0;
+  overflow: hidden;
+  pointer-events: none;
+  will-change: opacity;
+}
+.dive-animation {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center;
+}
+/* The ending: the camera pulls back from the fossil and a colossal shape passes in the dark. */
+.return-video-stage {
+  position: absolute;
+  z-index: 15;
+  inset: 0;
+  overflow: hidden;
+  background: #01040c;
   opacity: 0;
-  transform: translate(-50%, 16px);
-  color: #f2f5e8;
-  text-shadow: 0 2px 15px #081029, 0 0 36px #b2d4f155;
-  font: italic 400 clamp(2.3rem, 5vw, 5rem)/1 Georgia, serif;
-  letter-spacing: .04em;
   pointer-events: none;
   will-change: opacity, transform;
+}
+.return-animation {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center;
+}
+/* Cinema finish: scope bars slide in, the title tracks out of the dark, grain sits over everything. */
+.letterbox {
+  position: absolute;
+  z-index: 19;
+  left: 0;
+  right: 0;
+  height: 12.5vh;
+  background: #000;
+  pointer-events: none;
+  will-change: transform;
+}
+.letterbox-top {
+  top: 0;
+  transform: translateY(-100%);
+}
+.letterbox-bottom {
+  bottom: 0;
+  transform: translateY(100%);
+}
+.final-title {
+  --track: .18em;
+  --rule: 0;
+  position: absolute;
+  z-index: 20;
+  left: 50%;
+  top: 50%;
+  margin: 0;
+  padding-left: var(--track);
+  opacity: 0;
+  transform: translate(-50%, -50%);
+  color: #e9e6d8;
+  text-transform: uppercase;
+  text-shadow: 0 0 28px #9fb8d433, 0 2px 24px #000;
+  font: 400 clamp(3.4rem, 11vw, 9.5rem)/1 'Cormorant Garamond', 'Times New Roman', Georgia, serif;
+  letter-spacing: var(--track);
+  white-space: nowrap;
+  pointer-events: none;
+  will-change: opacity, transform, filter, letter-spacing;
+}
+.final-title::after {
+  content: '';
+  display: block;
+  width: calc(var(--rule) * 100%);
+  height: 1px;
+  margin: .32em auto 0 calc(var(--track) * -1 / 2);
+  background: linear-gradient(90deg, transparent, #e9e6d8bb, transparent);
+}
+.film-grain {
+  position: absolute;
+  z-index: 22;
+  inset: -50%;
+  opacity: 0;
+  pointer-events: none;
+  mix-blend-mode: overlay;
+  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='220' height='220'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='2' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 1  0 0 0 0 1  0 0 0 0 1  0 0 0 .9 0'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>");
+  animation: grain-shift .9s steps(6) infinite;
+  will-change: opacity, transform;
+}
+@keyframes grain-shift {
+  0% { transform: translate(0, 0); }
+  17% { transform: translate(-3%, 2%); }
+  33% { transform: translate(2%, -4%); }
+  50% { transform: translate(-4%, -1%); }
+  67% { transform: translate(3%, 3%); }
+  83% { transform: translate(-1%, 4%); }
+  100% { transform: translate(0, 0); }
 }
 @media (max-aspect-ratio: 3/4) {
   .great-white-frame, .sixgill-frame {
@@ -624,7 +725,7 @@ body {
   .blacktip-stage, .whale-stage {
     display: none;
   }
-  .whale-hammer-stage, .hammer-greatwhite-stage, .sixgill-video-stage, .sixgill-entry-veil, .abyss-veil, .final-title {
+  .whale-hammer-stage, .hammer-greatwhite-stage, .sixgill-video-stage, .megalodon-video-stage, .return-video-stage, .dive-stage, .letterbox, .film-grain, .shark-captions, .sixgill-entry-veil, .abyss-veil, .final-title {
     display: none;
   }
   .deep-stage {
@@ -655,4 +756,79 @@ body {
     text-shadow: 0 2px 15px #081029;
     font: italic 400 clamp(2.3rem, 5vw, 5rem)/1 Georgia, serif;
   }
+}
+
+/* Magical shark captions: each name shimmers in as its shark appears, then dissolves away. */
+.shark-captions {
+  position: absolute;
+  z-index: 21;
+  inset: 0;
+  pointer-events: none;
+}
+.shark-caption {
+  position: absolute;
+  left: clamp(1.2rem, 6vw, 5.5rem);
+  bottom: clamp(2rem, 10vh, 6rem);
+  margin: 0;
+  max-width: min(88vw, 40rem);
+  opacity: 0;
+  font-family: 'Cormorant Garamond', Georgia, serif;
+  will-change: opacity, transform, filter;
+}
+.shark-caption[data-shark="megalodon"] {
+  bottom: calc(12.5vh + 2.2rem);
+}
+.shark-name {
+  position: relative;
+  display: block;
+  width: max-content;
+  max-width: 100%;
+  font: italic 500 clamp(2.1rem, 5.2vw, 4.2rem)/1.05 'Cormorant Garamond', Georgia, serif;
+  letter-spacing: var(--track, .03em);
+  background: linear-gradient(100deg, #fff4cf 0%, #bff3ff 22%, #ffd6f4 46%, #fff4cf 70%, #c9fbff 100%);
+  background-size: 260% 100%;
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  filter: drop-shadow(0 2px 5px #04284a99) drop-shadow(0 0 18px #bfe6ff88);
+  animation: name-shimmer 7s linear infinite;
+}
+.shark-name::before, .shark-name::after {
+  content: '\2726';
+  position: absolute;
+  color: #fff6d8;
+  -webkit-text-fill-color: #fff6d8;
+  font-style: normal;
+  text-shadow: 0 0 10px #ffe9a8, 0 0 22px #9fdcff;
+  animation: star-twinkle 2.6s ease-in-out infinite;
+  pointer-events: none;
+}
+.shark-name::before {
+  top: -.38em;
+  right: -.5em;
+  font-size: .42em;
+}
+.shark-name::after {
+  bottom: .05em;
+  left: -.62em;
+  font-size: .26em;
+  animation-delay: 1.1s;
+}
+.shark-line {
+  display: block;
+  margin-top: .7rem;
+  padding-left: .15rem;
+  color: #f2f6ff;
+  text-shadow: 0 1px 8px #04203ccc, 0 0 16px #9fd4ff66;
+  font-size: clamp(.85rem, 1.55vw, 1.15rem);
+  font-weight: 500;
+  letter-spacing: .26em;
+  text-transform: uppercase;
+}
+@keyframes name-shimmer {
+  to { background-position: -260% 0; }
+}
+@keyframes star-twinkle {
+  0%, 100% { opacity: .15; transform: scale(.6) rotate(0deg); }
+  50% { opacity: 1; transform: scale(1.15) rotate(25deg); }
 }
