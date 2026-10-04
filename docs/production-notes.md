@@ -18,7 +18,7 @@ The first test is now in `assets/video/blacktip-to-whales-test-v1.mp4`: Seedance
 
 The second test is `assets/video/whales-to-hammerhead-test-v1.mp4`: the same Seedance 2.5 settings, with the top-view whale-shark painting and cobalt hammerhead painting as keyframes. The website scrolls through its 120 JPEG frames in `assets/video/whales-to-hammerhead-frames/`. The whale sharks leave above the camera, water darkens during the descent, and a separate hammerhead approaches. The shot joins the first sequence at the whale-shark view and the deeper storyboard at the hammerhead view.
 
-Separate Magnific sound effects are in `assets/audio/`: `splash-entry.mp3`, `underwater-ambience.mp3`, `shark-glide.mp3`, `megalodon-lunge.mp3`, and `deep-ink-impact.mp3`. The visitor must turn sound on with the top-right button. Ambient sound loops under the water; it nearly disappears while the fossil darkens. The lunge hits with the sudden mouth reveal, followed by the ink impact. No music or dialogue is used.
+Separate Magnific sound effects are in `assets/audio/`: `splash-entry.mp3`, `underwater-ambience.mp3`, `shark-glide.mp3`, `megalodon-lunge.mp3`, and `deep-ink-impact.mp3`. The visitor must turn sound on with the top-right button. Ambient sound loops under the water; it nearly disappears while the fossil darkens. The lunge hits with the sudden mouth reveal, followed by the ink impact.
 
 The hammerhead-to-great-white passage uses the user's 23-second animation after the existing whale-shark-to-hammerhead entrance. The old local belly-eye-body reveal remains underneath as a fallback. The sixgill entrance and seabed passage are now animated in the later sequence described below.
 
@@ -102,3 +102,44 @@ The project folder sits inside the Desktop, which has iCloud Desktop sync turned
 - **Frames.** Bridge frames 2 to 73 (frame 1 repeats the last frame of the old clip) were exported at 12 fps and 960x540 as frames 278 to 349 of `assets/video/hammerhead-to-great-white-user-frames/`, so that sequence now has 349 frames. The ends were checked against their neighbours and match.
 - **Timing (`renderJourney` in `js/app.js`).** Frames 1 to 277 still run over journey progress .55 to .81. The bridge (frames 278 to 349) runs over .81 to .84. The feeding scene then starts at .84, so its seabed frames 0 to 70 run over .840 to .874, the empty dark water over .874 to .887, and the rest over .887 to .938 (about 20% faster than before to make room). The two stages swap with a very short fade (.836 to .846) between almost identical frames. The glide sound that used to play at .82 now plays at .84. The Great White caption window is .745 to .890 and the Sixgill caption is .893 to .938.
 - **If a clip changes.** Keep the ends matching their neighbours (last frame of the great white clip, first frame of the feeding scene) and retime the numbers above.
+
+## Sound design (soundtrack, feeding, and megalodon effects)
+
+Sound stays opt-in. The visitor chooses "Dive in with sound" on the entry gate (which clicks the sound button from a real user gesture) or presses the sound button. Everything below lives in `updateSound(progress, tail)` in `js/app.js`.
+
+### New files in `assets/audio/`
+
+- `music-sunlit.mp3` (58 s, loops): "Dancing Sunbeams on Coral Waves". Soft acoustic guitar and ukulele, marimba and glockenspiel, airy flute, a faint shaker, about 78 BPM, major key.
+- `music-deep.mp3` (58 s, loops): "Twilight Abyss". Low swelling synth drones, cold detuned piano, sparse dissonant bell tones, slow sub-bass, minor key, no resolution.
+- `sfx-feeding.mp3` (5 s): a great white feeding on fish: a heavy muffled jaw snap and crunch, churning water and bubbles, fish darting away, a second quieter chomp.
+- `sfx-megalodon.mp3` (10 s): a very deep, slow animal groan, a sub-bass swell, heavy water displacement, a long fading rumble.
+- Every prompt said no vocals, no breathing, no gasps, no screams. The music prompts also said instrumental only and no sound effects.
+- The two music files were turned into seamless loops: 60 s source, first 2 s and last 2 s crossfaded into one 58 s file. The effects were loudness-normalized (feeding to about -17 LUFS, megalodon to about -16 LUFS, true peak -1.5 dB) because the feeding source peaked above 0 dBFS. The music keeps its generated level (about -19 and -21 LUFS) and is mixed down with the volume numbers in `updateSound`.
+
+### How the score moves
+
+| Journey progress | What you hear |
+| --- | --- |
+| 0 (dive in) | Sunlit score alone, 0.42 volume |
+| .16 and on | Splash, then the underwater ambience under the score |
+| .38 to .64 | Sunlit score fades out |
+| .40 to .70 | Deep score fades in (0.38 volume) and the deep ambience builds |
+| .842 to .884 | While the great white feeds, the deep score ducks by 40% |
+| .950 to .990 | Everything drops out for the dark hold before the megalodon (`silence`) |
+| `LUNGE_AT` (.9672) | Lunge plus the megalodon roar |
+| .979 | Ink impact |
+| tail .02 to .2 | Deep score returns for the pull-back |
+| tail .38 | The megalodon effect plays again at 0.5 volume as the silhouette appears |
+| tail .8 to 1 | Deep score thins to about 45% for "fin" |
+
+### One-shot effects
+
+- Glide: .24, .51, .75 and .89 (the sixgill appears). The old glide at .84 was replaced by the feeding effect.
+- Feeding: `sfx-feeding.mp3` at .845, just as the great white's mouth opens.
+- Effects only fire when moving forward across a threshold, and not at all during fast scrubbing (progress changing by more than .012 per frame, or a tail jump over .05). This stops a chapter-link jump from setting off a pile of effects at once.
+
+### Retuning
+
+- Volumes and fade ranges are the numbers at the top of `updateSound`. If a clip is retimed, move the feeding trigger (.845), `LUNGE_AT`, and the tail trigger (.38) with it.
+- Layers are only played while audible (`setLayer`), so silent loops do not keep decoding.
+- I could not listen to the audio here. The mix was checked by measuring loudness and by logging each layer's volume at points through the journey. Please listen on your own speakers or headphones and adjust the volume numbers to taste.

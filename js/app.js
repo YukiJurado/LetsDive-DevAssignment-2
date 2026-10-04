@@ -67,56 +67,89 @@
   const pulse = (x, a, b, c, d) => span(x, a, b) * (1 - span(x, c, d));
   const setOpacity = (el, value) => { el.style.opacity = clamp(value).toFixed(3); };
 
-  // Browser audio starts only after the visitor presses the sound button.
+  // Browser audio starts only after the visitor presses the sound button (or chooses "Dive in with sound").
+  // Layers: a sunlit score that gives way to an eerie deep score, two ambience loops, and one-shot effects.
+  const musicSunlit = new Audio('assets/audio/music-sunlit.mp3');
+  const musicDeep = new Audio('assets/audio/music-deep.mp3');
   const ambience = new Audio('assets/audio/underwater-ambience.mp3');
   const deepAmbience = new Audio('assets/audio/deep-pressure.mp3');
   const splash = new Audio('assets/audio/splash-entry.mp3');
   const glide = new Audio('assets/audio/shark-glide.mp3');
+  const feeding = new Audio('assets/audio/sfx-feeding.mp3');
   const inkImpact = new Audio('assets/audio/deep-ink-impact.mp3');
   const lunge = new Audio('assets/audio/megalodon-lunge.mp3');
+  const megalodonRoar = new Audio('assets/audio/sfx-megalodon.mp3');
+  const megalodonPass = new Audio('assets/audio/sfx-megalodon.mp3');
+  [musicSunlit, musicDeep].forEach((track) => { track.loop = true; track.preload = 'auto'; track.volume = 0; });
   ambience.loop = true;
   deepAmbience.loop = true;
   ambience.volume = 0;
   deepAmbience.volume = 0;
   splash.volume = 0.65;
   glide.volume = 0.45;
+  feeding.volume = 0.85;
   inkImpact.volume = 0.72;
   lunge.volume = 0.8;
+  megalodonRoar.volume = 0.9;
+  megalodonPass.volume = 0.5;
   let soundEnabled = false;
   let lastProgress = 0;
+  let lastTail = 0;
   function playEffect(sound) {
     if (!soundEnabled) return;
     sound.currentTime = 0;
     sound.play().catch(() => {});
   }
-  function updateSound(progress) {
+  // Keep a looping layer playing only while it is audible.
+  function setLayer(sound, volume) {
+    sound.volume = Math.max(0, Math.min(1, volume));
+    if (soundEnabled && sound.volume > .002) {
+      if (sound.paused) sound.play().catch(() => {});
+    } else if (!sound.paused) {
+      sound.pause();
+    }
+  }
+  function updateSound(progress, tail = 0) {
     const underwater = progress >= .16;
     const depth = span(progress, .69, .82);
     const silence = 1 - .98 * pulse(progress, .95, .958, .975, .99);
-    ambience.volume = .3 * span(progress, .16, .25) * (1 - .75 * depth) * silence;
-    deepAmbience.volume = .22 * depth * silence;
-    if (soundEnabled && underwater) {
-      if (ambience.paused) ambience.play().catch(() => {});
-      if (deepAmbience.paused) deepAmbience.play().catch(() => {});
+    // Score: sunlit through the surface, reef and open water, easing into the eerie deep score as the water darkens.
+    // It drops out before the megalodon vision, returns as a thin drone for the pull-back, and thins again for "fin".
+    const sunMix = 1 - span(progress, .38, .64);
+    const deepMix = span(progress, .40, .70);
+    const tailMix = tail > 0 ? span(tail, .02, .2) * (1 - .55 * span(tail, .8, 1)) : 1;
+    const feedingDuck = 1 - .4 * pulse(progress, .842, .85, .872, .884);
+    setLayer(musicSunlit, .42 * sunMix * silence);
+    setLayer(musicDeep, .38 * deepMix * silence * tailMix * feedingDuck);
+    setLayer(ambience, soundEnabled && underwater ? .3 * span(progress, .16, .25) * (1 - .75 * depth) * silence : 0);
+    setLayer(deepAmbience, soundEnabled && underwater ? .22 * depth * silence : 0);
+    // Quick scrubbing (chapter links, fast flicks) should not fire a pile of effects at once.
+    const scrubbing = Math.abs(progress - lastProgress) > .012 || Math.abs(tail - lastTail) > .05;
+    if (soundEnabled && underwater && !scrubbing) {
       if (lastProgress < .16 && progress >= .16) playEffect(splash);
       if (lastProgress < .24 && progress >= .24) playEffect(glide);
       if (lastProgress < .51 && progress >= .51) playEffect(glide);
       if (lastProgress < .75 && progress >= .75) playEffect(glide);
-      if (lastProgress < .84 && progress >= .84) playEffect(glide);
-      if (lastProgress < LUNGE_AT && progress >= LUNGE_AT) playEffect(lunge);
+      // The great white feeds among the school of fish.
+      if (lastProgress < .845 && progress >= .845) playEffect(feeding);
+      if (lastProgress < .89 && progress >= .89) playEffect(glide);
+      // The megalodon appears: the jaws burst out, then its silhouette passes in the dark.
+      if (lastProgress < LUNGE_AT && progress >= LUNGE_AT) {
+        playEffect(lunge);
+        playEffect(megalodonRoar);
+      }
       if (lastProgress < .979 && progress >= .979) playEffect(inkImpact);
-    } else {
-      ambience.pause();
-      deepAmbience.pause();
+      if (lastTail < .38 && tail >= .38) playEffect(megalodonPass);
     }
     lastProgress = progress;
+    lastTail = tail;
   }
   soundToggle.addEventListener('click', () => {
     soundEnabled = !soundEnabled;
     soundToggle.setAttribute('aria-pressed', String(soundEnabled));
     soundToggle.setAttribute('aria-label', soundEnabled ? 'Turn sound off' : 'Turn sound on');
     soundToggle.title = soundEnabled ? 'Turn sound off' : 'Turn sound on';
-    updateSound(lastProgress);
+    updateSound(lastProgress, lastTail);
   });
 
   // Each video is exported as images so scrolling can move its frames both ways.
@@ -332,7 +365,7 @@
     setOpacity(sixgillEntryVeil, Math.max(entryInk, seabedSilt));
     setOpacity(firstHandoffWash, pulse(progress, .320, .329, .343, .355));
     firstHandoffWash.style.transform = `translateY(${(8 * span(progress, .320, .355)).toFixed(2)}%) scale(${(1.02 + .08 * span(progress, .320, .355)).toFixed(3)})`;
-    updateSound(progress);
+    updateSound(progress, tail);
     window.dispatchEvent(new CustomEvent('journey:progress', { detail: { progress, tail } }));
   };
   // A short time-based glide removes wheel/touchpad jitter while keeping reverse scroll exact.
