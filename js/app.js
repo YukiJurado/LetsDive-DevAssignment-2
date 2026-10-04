@@ -122,7 +122,10 @@
   // Each video is exported as images so scrolling can move its frames both ways.
   // Frames are painted onto a canvas instead of swapping an <img> source: that never flashes blank,
   // and if a frame has not loaded yet the nearest loaded frame stays on screen, so reverse scrolling cannot glitch.
-  function setupFrameSequence(image, stage, folder, count) {
+  // Frames that must be ready before the entry gate opens report their progress to js/site.js.
+  const frameStats = { loaded: 0, total: 0 };
+  function setupFrameSequence(image, stage, folder, count, priority = false) {
+    if (priority) frameStats.total += count;
     const canvas = document.createElement('canvas');
     canvas.className = image.className;
     canvas.setAttribute('aria-hidden', 'true');
@@ -152,6 +155,10 @@
       frame.decoding = 'async';
       frame.onload = () => {
         loaded[index] = true;
+        if (priority) {
+          frameStats.loaded += 1;
+          window.dispatchEvent(new CustomEvent('journey:frames', { detail: { ...frameStats } }));
+        }
         if (index === 0) stage.classList.add('sequence-ready');
         paint();
       };
@@ -163,13 +170,14 @@
       paint();
     };
   }
+  // The intro sequences are created first so their frames load first.
+  const showDiveFrame = setupFrameSequence(diveAnimation, diveStage, 'assets/video/intro-dive-frames', 241, true);
+  const showBlacktipFrame = setupFrameSequence(blacktipAnimation, blacktipStage, 'assets/video/blacktip-reef-user-frames', 121, true);
   const showWhaleFrame = setupFrameSequence(whaleAnimation, whaleStage, 'assets/video/blacktip-to-whales-frames', 120);
-  const showBlacktipFrame = setupFrameSequence(blacktipAnimation, blacktipStage, 'assets/video/blacktip-reef-user-frames', 121);
   const showHammerFrame = setupFrameSequence(hammerAnimation, whaleHammerStage, 'assets/video/whales-to-hammerhead-frames', 120);
   const showHammerGreatWhiteFrame = setupFrameSequence(hammerGreatWhiteAnimation, hammerGreatWhiteStage, 'assets/video/hammerhead-to-great-white-user-frames', 277);
   const showSixgillFrame = setupFrameSequence(sixgillAnimation, sixgillVideoStage, 'assets/video/great-white-to-sixgill-seabed-frames', 481);
   const showMegalodonFrame = setupFrameSequence(megalodonAnimation, megalodonStage, 'assets/video/megalodon-jumpscare-frames', 241);
-  const showDiveFrame = setupFrameSequence(diveAnimation, diveStage, 'assets/video/intro-dive-frames', 241);
   const showReturnFrame = setupFrameSequence(returnAnimation, returnStage, 'assets/video/return-fossil-frames', 241);
   function render(progress) {
     const p = clamp(progress);
@@ -286,6 +294,8 @@
   }
   const RATE = 1900 / 1700;
   const TAIL_START = .984 / RATE;
+  // site.js reads these to place the chapter links and the depth gauge.
+  window.sharkJourney = { rate: RATE, tailStart: TAIL_START, frameStats };
   const renderJourney = (scroll) => {
     const progress = Math.min(1, scroll * RATE);
     const tail = clamp((scroll - TAIL_START) / (1 - TAIL_START));
@@ -320,6 +330,7 @@
     setOpacity(firstHandoffWash, pulse(progress, .320, .329, .343, .355));
     firstHandoffWash.style.transform = `translateY(${(8 * span(progress, .320, .355)).toFixed(2)}%) scale(${(1.02 + .08 * span(progress, .320, .355)).toFixed(3)})`;
     updateSound(progress);
+    window.dispatchEvent(new CustomEvent('journey:progress', { detail: { progress, tail } }));
   };
   // A short time-based glide removes wheel/touchpad jitter while keeping reverse scroll exact.
   let targetProgress = 0;

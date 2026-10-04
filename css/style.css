@@ -832,3 +832,392 @@ body {
   0%, 100% { opacity: .15; transform: scale(.6) rotate(0deg); }
   50% { opacity: 1; transform: scale(1.15) rotate(25deg); }
 }
+
+/* ===== Website chrome: entry gate, header, depth gauge, closing section ===== */
+:root {
+  --cream: #fffbe8;
+  --sea-glass: #60cbd7;
+  --deep-teal: #064d63;
+  --night: #031225;
+  --spark: #ffe9a8;
+  --serif: 'Cormorant Garamond', Georgia, serif;
+  --sans: 'Jost', 'Helvetica Neue', Arial, sans-serif;
+}
+/* Entry gate: a frosted pane over the painted surface, with the title, a loading bar and the choice to dive in. */
+.entry-gate {
+  position: fixed;
+  z-index: 50;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  padding: 6vh 6vw;
+  overflow: hidden;
+  background: radial-gradient(ellipse at 50% 38%, #0b7f9a66 0%, #064b6ab3 55%, #031f35e6 100%);
+  -webkit-backdrop-filter: blur(20px) saturate(1.25);
+  backdrop-filter: blur(20px) saturate(1.25);
+  color: var(--cream);
+  text-align: center;
+  transition: opacity 1.3s ease, backdrop-filter 1.3s ease, -webkit-backdrop-filter 1.3s ease;
+}
+.entry-gate.is-leaving {
+  opacity: 0;
+  -webkit-backdrop-filter: blur(0) saturate(1);
+  backdrop-filter: blur(0) saturate(1);
+  pointer-events: none;
+}
+.gate-inner {
+  position: relative;
+  z-index: 2;
+  display: grid;
+  justify-items: center;
+  gap: 1.1rem;
+  max-width: 46rem;
+}
+.gate-eyebrow, .gate-hint, .gate-loader-text {
+  margin: 0;
+  font: 500 clamp(.72rem, 1.4vw, .88rem)/1.5 var(--sans);
+  letter-spacing: .34em;
+  text-transform: uppercase;
+  color: #e9fbffcc;
+}
+.gate-title {
+  margin: 0;
+  font: italic 500 clamp(3.8rem, 13vw, 10rem)/.95 var(--serif);
+  letter-spacing: -.01em;
+  background: linear-gradient(100deg, #fff6d6 0%, #c4f6ff 28%, #ffe0f4 52%, #fff6d6 76%, #cffcff 100%);
+  background-size: 260% 100%;
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  filter: drop-shadow(0 4px 22px #02263f99);
+  animation: name-shimmer 9s linear infinite, gate-rise 1.6s cubic-bezier(.2, .7, .2, 1) both;
+}
+.gate-lede {
+  margin: 0;
+  max-width: 34rem;
+  font: italic 400 clamp(1.15rem, 2.4vw, 1.6rem)/1.45 var(--serif);
+  color: #f4fdff;
+  text-shadow: 0 2px 16px #02263f99;
+  animation: gate-rise 1.6s .25s cubic-bezier(.2, .7, .2, 1) both;
+}
+.gate-loader {
+  display: grid;
+  justify-items: center;
+  gap: .8rem;
+  margin-top: 1rem;
+  animation: gate-rise 1.6s .5s cubic-bezier(.2, .7, .2, 1) both;
+}
+.gate-loader[hidden], .gate-actions[hidden] {
+  display: none;
+}
+.gate-loader-bar {
+  width: min(70vw, 18rem);
+  height: 3px;
+  border-radius: 3px;
+  background: #ffffff2e;
+  overflow: hidden;
+}
+.gate-loader-bar i {
+  display: block;
+  width: 100%;
+  height: 100%;
+  border-radius: 3px;
+  background: linear-gradient(90deg, var(--sea-glass), var(--cream));
+  transform: scaleX(var(--load, .04));
+  transform-origin: left center;
+  transition: transform .4s ease;
+}
+.gate-actions {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: .9rem;
+  margin-top: 1rem;
+  animation: gate-rise 1s cubic-bezier(.2, .7, .2, 1) both;
+}
+.gate-btn {
+  display: inline-flex;
+  align-items: baseline;
+  gap: .6rem;
+  padding: .95rem 1.8rem;
+  border: 1.5px solid #fffbe8b0;
+  border-radius: 999px;
+  background: #ffffff14;
+  color: var(--cream);
+  font: 500 .92rem/1 var(--sans);
+  letter-spacing: .2em;
+  text-transform: uppercase;
+  cursor: pointer;
+  -webkit-backdrop-filter: blur(6px);
+  backdrop-filter: blur(6px);
+  transition: transform .25s ease, background .25s ease, box-shadow .25s ease;
+}
+.gate-btn small {
+  font-size: .68rem;
+  letter-spacing: .18em;
+  opacity: .8;
+}
+.gate-btn:hover, .gate-btn:focus-visible {
+  transform: translateY(-3px);
+  background: #ffffff2e;
+  box-shadow: 0 10px 30px #02263f80;
+  outline: none;
+}
+.gate-btn:focus-visible {
+  outline: 3px solid #fff;
+  outline-offset: 3px;
+}
+.gate-btn-main {
+  border-color: transparent;
+  background: linear-gradient(135deg, #fffbe8, #bff3ff);
+  color: var(--deep-teal);
+  box-shadow: 0 8px 28px #7ee2f066;
+}
+.gate-btn-main:hover, .gate-btn-main:focus-visible {
+  background: linear-gradient(135deg, #ffffff, #d9faff);
+  box-shadow: 0 14px 38px #7ee2f0a6;
+}
+.gate-hint {
+  margin-top: 1.4rem;
+  font-size: clamp(.62rem, 1.1vw, .74rem);
+  letter-spacing: .26em;
+  opacity: .8;
+}
+.gate-bubble {
+  position: absolute;
+  bottom: -12vh;
+  left: calc(8% + var(--n, 0) * 12%);
+  width: var(--size, 22px);
+  height: var(--size, 22px);
+  border: 1.5px solid #ffffffa6;
+  border-radius: 50%;
+  background: radial-gradient(circle at 30% 28%, #ffffffb3, #ffffff14 60%);
+  opacity: .0;
+  animation: gate-bubble var(--dur, 12s) var(--delay, 0s) linear infinite;
+  pointer-events: none;
+}
+.gate-bubble:nth-child(1) { --n: 0; --size: 18px; --dur: 11s; --delay: 0s; }
+.gate-bubble:nth-child(2) { --n: 1; --size: 34px; --dur: 14s; --delay: 2s; }
+.gate-bubble:nth-child(3) { --n: 2; --size: 14px; --dur: 10s; --delay: 5s; }
+.gate-bubble:nth-child(4) { --n: 3.4; --size: 26px; --dur: 13s; --delay: 1s; }
+.gate-bubble:nth-child(5) { --n: 5; --size: 40px; --dur: 16s; --delay: 4s; }
+.gate-bubble:nth-child(6) { --n: 6.3; --size: 16px; --dur: 9s; --delay: 3s; }
+.gate-bubble:nth-child(7) { --n: 7.4; --size: 28px; --dur: 12s; --delay: 6s; }
+@keyframes gate-bubble {
+  0% { transform: translate(0, 0) scale(.7); opacity: 0; }
+  12% { opacity: .85; }
+  50% { transform: translate(14px, -60vh) scale(1); }
+  88% { opacity: .6; }
+  100% { transform: translate(-10px, -118vh) scale(1.08); opacity: 0; }
+}
+@keyframes gate-rise {
+  from { opacity: 0; transform: translateY(18px); filter: blur(8px); }
+  to { opacity: 1; transform: translateY(0); filter: blur(0); }
+}
+/* Header: wordmark and chapter links over the scene. */
+.site-header {
+  position: fixed;
+  z-index: 25;
+  top: 0;
+  left: 0;
+  right: 0;
+  display: flex;
+  align-items: center;
+  gap: 2rem;
+  padding: 18px 92px 0 clamp(18px, 3.2vw, 44px);
+  pointer-events: none;
+  transition: opacity 1.2s .5s ease;
+}
+body.gate-open .site-header, body.gate-open .depth-gauge {
+  opacity: 0;
+}
+.site-header button {
+  pointer-events: auto;
+  border: 0;
+  background: none;
+  color: var(--cream);
+  cursor: pointer;
+  text-shadow: 0 1px 12px #03284499, 0 0 3px #03284499;
+}
+.site-mark {
+  padding: 0;
+  font: italic 500 clamp(1.5rem, 2.4vw, 2rem)/1 var(--serif);
+  letter-spacing: -.01em;
+}
+.site-nav {
+  display: flex;
+  flex-wrap: wrap;
+  gap: .2rem clamp(.7rem, 1.8vw, 1.8rem);
+  margin-left: auto;
+}
+.site-nav button {
+  position: relative;
+  padding: .55rem .1rem;
+  font: 500 .72rem/1 var(--sans);
+  letter-spacing: .24em;
+  text-transform: uppercase;
+  opacity: .78;
+  transition: opacity .25s ease;
+}
+.site-nav button::after {
+  content: '';
+  position: absolute;
+  left: 50%;
+  bottom: 0;
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background: var(--spark);
+  box-shadow: 0 0 10px var(--spark);
+  transform: translateX(-50%) scale(0);
+  transition: transform .3s ease;
+}
+.site-nav button:hover, .site-nav button:focus-visible, .site-nav button.is-active {
+  opacity: 1;
+  outline: none;
+}
+.site-nav button.is-active::after {
+  transform: translateX(-50%) scale(1);
+}
+.site-header button:focus-visible {
+  outline: 2px solid #fff;
+  outline-offset: 4px;
+  border-radius: 4px;
+}
+/* Depth gauge: a slim live depth readout down the right edge. */
+.depth-gauge {
+  position: fixed;
+  z-index: 24;
+  right: clamp(14px, 2.4vw, 34px);
+  top: 50%;
+  display: grid;
+  justify-items: center;
+  gap: .8rem;
+  color: var(--cream);
+  transform: translateY(-50%);
+  pointer-events: none;
+  text-shadow: 0 1px 12px #03284499;
+  transition: opacity 1.2s .6s ease;
+}
+.gauge-label {
+  font: 500 .62rem/1 var(--sans);
+  letter-spacing: .34em;
+  text-transform: uppercase;
+  writing-mode: vertical-rl;
+  opacity: .8;
+}
+.gauge-track {
+  position: relative;
+  width: 2px;
+  height: min(40vh, 22rem);
+  border-radius: 2px;
+  background: linear-gradient(#fffbe8cc, #fffbe840);
+  box-shadow: 0 0 10px #03284466;
+}
+.gauge-track::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: -5px;
+  width: 12px;
+  background: repeating-linear-gradient(to bottom, #fffbe899 0 1px, transparent 1px calc(100% / 10));
+  -webkit-mask: linear-gradient(90deg, transparent 0 25%, #000 25% 75%, transparent 75%);
+  mask: linear-gradient(90deg, transparent 0 25%, #000 25% 75%, transparent 75%);
+}
+.gauge-marker {
+  position: absolute;
+  left: 50%;
+  top: calc(var(--depth, 0) * 100%);
+  width: 14px;
+  height: 14px;
+  border: 2px solid var(--cream);
+  border-radius: 50%;
+  background: var(--spark);
+  box-shadow: 0 0 14px #ffe9a8, 0 0 28px #8fe3f2aa;
+  transform: translate(-50%, -50%);
+}
+.gauge-value {
+  min-width: 4.6rem;
+  text-align: center;
+  font: italic 500 1.05rem/1 var(--serif);
+  letter-spacing: .04em;
+}
+.gauge-value b {
+  font-size: 1.6rem;
+  font-weight: 500;
+}
+/* Closing section after the journey: back to the surface and credits. */
+.site-end {
+  display: grid;
+  justify-items: center;
+  gap: 1.6rem;
+  min-height: 70vh;
+  padding: 18vh 8vw 10vh;
+  background: #000;
+  color: var(--cream);
+  text-align: center;
+}
+.end-title {
+  margin: 0;
+  font: italic 500 clamp(2rem, 5vw, 3.6rem)/1.1 var(--serif);
+  letter-spacing: .02em;
+}
+.end-top {
+  padding: .95rem 1.8rem;
+  border: 1.5px solid #fffbe88a;
+  border-radius: 999px;
+  background: none;
+  color: var(--cream);
+  font: 500 .85rem/1 var(--sans);
+  letter-spacing: .22em;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: background .25s ease, color .25s ease, transform .25s ease;
+}
+.end-top:hover, .end-top:focus-visible {
+  background: var(--cream);
+  color: var(--night);
+  transform: translateY(-3px);
+  outline: none;
+}
+.end-credits {
+  max-width: 34rem;
+  margin: 2.4rem 0 0;
+  font: 400 .78rem/1.8 var(--sans);
+  letter-spacing: .08em;
+  color: #fffbe899;
+}
+@media (max-width: 760px) {
+  .site-nav { display: none; }
+  .site-header { padding-right: 80px; }
+  .gauge-label { display: none; }
+  .gate-actions { flex-direction: column; align-items: stretch; width: min(86vw, 20rem); }
+  .gate-btn { justify-content: center; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .site-nav, .depth-gauge, .gate-bubble { display: none; }
+  .gate-title, .gate-lede, .gate-loader, .gate-actions { animation: none; }
+}
+/* A soft dark fade keeps the header and gauge readable over the bright surface scenes. */
+.site-header::before {
+  content: '';
+  position: absolute;
+  z-index: -1;
+  inset: 0 0 auto 0;
+  height: 112px;
+  background: linear-gradient(180deg, #04304f8c 0%, #04304f45 55%, transparent 100%);
+  pointer-events: none;
+}
+.site-header button {
+  text-shadow: 0 1px 3px #021e35b3, 0 0 14px #03284499;
+}
+.site-nav button {
+  opacity: .9;
+}
+.depth-gauge {
+  text-shadow: 0 1px 3px #021e35b3, 0 0 14px #03284499;
+}
+.gauge-track {
+  box-shadow: 0 0 0 1px #04304f55, 0 0 10px #03284466;
+}

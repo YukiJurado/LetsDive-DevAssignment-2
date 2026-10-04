@@ -3,3 +3,5 @@ node_modules/
 dist/
 .env
 .env.*
+# iCloud/Finder conflict copies such as "frame-001 2.jpg" are never part of the project.
+* [0-9].*

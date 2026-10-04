@@ -78,3 +78,19 @@ Everything below was added after the earlier notes. The ending clips use Seedanc
 ### Local preview
 
 - Open `index.html` directly, or use the VS Code Live Server extension. No Python or build step is needed.
+
+## Website entry experience (landing, header, depth gauge, closing section)
+
+The journey used to start cold: the page opened straight onto the mask. A website layer now frames it. It lives in `js/site.js` and the "Website chrome" block at the end of `css/style.css`, and is wired into `index.html`.
+
+- **Entry gate.** A full-screen frosted pane (`.entry-gate`) over the painted surface scene, with the title in the same shimmering italic serif as the shark captions, one line of copy, rising bubbles, a loading bar and two buttons: "Dive in with sound" and "Dive in quietly". Page scroll is locked and the header and journey are `inert` until the visitor chooses. "With sound" clicks the existing sound button, so audio starts from a real user gesture.
+- **Loading.** `js/app.js` counts the frames of the two intro sequences (the dive and the blacktip, marked `priority` in `setupFrameSequence`, and created first so they load first) and sends `journey:frames` events. The gate opens its buttons when 80% are ready. A 12 second fallback, or 0.6 seconds with reduced motion, opens it anyway.
+- **Header.** A wordmark (scrolls to the top) and chapter links with `data-p` values. `data-p` is journey progress (the same scale as `captionWindows`); `2` means the very end. The active chapter follows the scroll. Below 760px the links are hidden and only the wordmark shows. A soft dark fade behind the header keeps it readable over the bright surface.
+- **Depth gauge.** `depthStops` in `js/site.js` maps journey progress to a story depth (0 m, 8 m at the reef, 40 m with the whale sharks, 300 m at the great white, 1,000 m at the fossil, then down to 4,000 m during the pull-back). The marker uses a square-root scale so the shallow part is not squashed.
+- **Closing section.** `.site-end` follows the journey on black: "Thank you for diving.", a "Back to the surface" button (instant jump to the top, then the normal glide), and a credit line. The credit line states the tools (HTML, CSS, JavaScript, GSAP ScrollTrigger, Magnific, Codex) and that some clips were supplied by the project creator. Edit it in `index.html` to name people.
+- **Hooks between the files.** `js/app.js` exposes `window.sharkJourney = { rate, tailStart, frameStats }` and fires `journey:progress` (`{ progress, tail }`) on every render and `journey:frames` while priority frames load. `js/site.js` only reads them, so the journey code can change without touching the website layer.
+- **Page details.** The mask's "lets dive!" is now a `<p>` because the gate owns the single `<h1>`. The tab title is "Let's Dive — a scroll-told shark story", with a meta description, a theme color, and a shark emoji favicon. A Jost font was added for small labels and buttons, next to Cormorant Garamond.
+
+### Duplicate files from iCloud sync
+
+The project folder sits inside the Desktop, which has iCloud Desktop sync turned on. Syncing hundreds of frame files while they were being rewritten made macOS create identical conflict copies named like `frame-001 2.jpg` and `frame-001 3.jpg`. Some of them were committed once by accident and were removed in the commit "Remove stray duplicate frame files". `.gitignore` now ignores any file ending in a space, a digit and an extension, so they cannot be committed again.
