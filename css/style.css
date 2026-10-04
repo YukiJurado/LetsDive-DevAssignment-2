@@ -54,7 +54,7 @@ body {
 }
 /* The sticky stage stays visible while its long scroll track moves past. */
 .journey {
-  height: 1800vh;
+  height: 2000vh;
 }
 .stage {
   position: sticky;
@@ -549,20 +549,104 @@ body {
   background: radial-gradient(ellipse at 51% 42%, #020613 0%, #01040c 75%);
   will-change: opacity;
 }
-.final-title {
+/* The intro dive: one continuous painted move from the surface into the reef, replacing the old zooming stills. */
+.dive-stage {
   position: absolute;
-  z-index: 18;
-  left: 50%;
-  bottom: 3%;
-  margin: 0;
+  z-index: 3;
+  inset: 0;
+  overflow: hidden;
+  pointer-events: none;
+  will-change: opacity;
+}
+.dive-animation {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center;
+}
+/* The ending: the camera pulls back from the fossil and a colossal shape passes in the dark. */
+.return-video-stage {
+  position: absolute;
+  z-index: 15;
+  inset: 0;
+  overflow: hidden;
+  background: #01040c;
   opacity: 0;
-  transform: translate(-50%, 16px);
-  color: #f2f5e8;
-  text-shadow: 0 2px 15px #081029, 0 0 36px #b2d4f155;
-  font: italic 400 clamp(2.3rem, 5vw, 5rem)/1 Georgia, serif;
-  letter-spacing: .04em;
   pointer-events: none;
   will-change: opacity, transform;
+}
+.return-animation {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center;
+}
+/* Cinema finish: scope bars slide in, the title tracks out of the dark, grain sits over everything. */
+.letterbox {
+  position: absolute;
+  z-index: 19;
+  left: 0;
+  right: 0;
+  height: 12.5vh;
+  background: #000;
+  pointer-events: none;
+  will-change: transform;
+}
+.letterbox-top {
+  top: 0;
+  transform: translateY(-100%);
+}
+.letterbox-bottom {
+  bottom: 0;
+  transform: translateY(100%);
+}
+.final-title {
+  --track: .18em;
+  --rule: 0;
+  position: absolute;
+  z-index: 20;
+  left: 50%;
+  top: 50%;
+  margin: 0;
+  padding-left: var(--track);
+  opacity: 0;
+  transform: translate(-50%, -50%);
+  color: #e9e6d8;
+  text-transform: uppercase;
+  text-shadow: 0 0 28px #9fb8d433, 0 2px 24px #000;
+  font: 400 clamp(3.4rem, 11vw, 9.5rem)/1 'Cormorant Garamond', 'Times New Roman', Georgia, serif;
+  letter-spacing: var(--track);
+  white-space: nowrap;
+  pointer-events: none;
+  will-change: opacity, transform, filter, letter-spacing;
+}
+.final-title::after {
+  content: '';
+  display: block;
+  width: calc(var(--rule) * 100%);
+  height: 1px;
+  margin: .32em auto 0 calc(var(--track) * -1 / 2);
+  background: linear-gradient(90deg, transparent, #e9e6d8bb, transparent);
+}
+.film-grain {
+  position: absolute;
+  z-index: 22;
+  inset: -50%;
+  opacity: 0;
+  pointer-events: none;
+  mix-blend-mode: overlay;
+  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='220' height='220'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='2' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 1  0 0 0 0 1  0 0 0 0 1  0 0 0 .9 0'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>");
+  animation: grain-shift .9s steps(6) infinite;
+  will-change: opacity, transform;
+}
+@keyframes grain-shift {
+  0% { transform: translate(0, 0); }
+  17% { transform: translate(-3%, 2%); }
+  33% { transform: translate(2%, -4%); }
+  50% { transform: translate(-4%, -1%); }
+  67% { transform: translate(3%, 3%); }
+  83% { transform: translate(-1%, 4%); }
+  100% { transform: translate(0, 0); }
 }
 @media (max-aspect-ratio: 3/4) {
   .great-white-frame, .sixgill-frame {
@@ -641,7 +725,7 @@ body {
   .blacktip-stage, .whale-stage {
     display: none;
   }
-  .whale-hammer-stage, .hammer-greatwhite-stage, .sixgill-video-stage, .megalodon-video-stage, .sixgill-entry-veil, .abyss-veil, .final-title {
+  .whale-hammer-stage, .hammer-greatwhite-stage, .sixgill-video-stage, .megalodon-video-stage, .return-video-stage, .dive-stage, .letterbox, .film-grain, .sixgill-entry-veil, .abyss-veil, .final-title {
     display: none;
   }
   .deep-stage {

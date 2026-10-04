@@ -36,13 +36,19 @@
   const sixgillEntryVeil = q('.sixgill-entry-veil');
   const megalodonStage = q('.megalodon-video-stage');
   const megalodonAnimation = q('.megalodon-animation');
+  const diveStage = q('.dive-stage');
+  const diveAnimation = q('.dive-animation');
+  const returnStage = q('.return-video-stage');
+  const returnAnimation = q('.return-animation');
+  const letterboxTop = q('.letterbox-top');
+  const letterboxBottom = q('.letterbox-bottom');
+  const filmGrain = q('.film-grain');
   const abyssVeil = q('.abyss-veil');
   const deepStage = q('.deep-stage');
   const greatWhiteBelly = q('.great-white-belly');
   const greatWhiteEye = q('.great-white-eye');
   const greatWhite = q('.great-white-frame');
   const sixgill = q('.sixgill-frame');
-  const calmReturn = q('.return-frame');
   const finalTitle = q('.final-title');
   const deepCurrent = q('.deep-current');
   const depthWash = q('.depth-wash');
@@ -135,6 +141,8 @@
   const showHammerGreatWhiteFrame = setupFrameSequence(hammerGreatWhiteAnimation, hammerGreatWhiteStage, 'assets/video/hammerhead-to-great-white-user-frames', 277);
   const showSixgillFrame = setupFrameSequence(sixgillAnimation, sixgillVideoStage, 'assets/video/great-white-to-sixgill-seabed-frames', 481);
   const showMegalodonFrame = setupFrameSequence(megalodonAnimation, megalodonStage, 'assets/video/megalodon-jumpscare-frames', 241);
+  const showDiveFrame = setupFrameSequence(diveAnimation, diveStage, 'assets/video/intro-dive-frames', 241);
+  const showReturnFrame = setupFrameSequence(returnAnimation, returnStage, 'assets/video/return-fossil-frames', 241);
   function render(progress) {
     const p = clamp(progress);
     const approach = span(p, .04, .57);
@@ -198,9 +206,8 @@
     setOpacity(deepCurrent, .36 * (1 - span(p, .83, .92)) + .12 * span(p, .97, 1));
     setOpacity(deepParticles, .35 * span(p, .15, .3) * (1 - span(p, .84, .9)) + .13 * span(p, .96, 1));
   }
-  function renderFinale(p) {
+  function renderFinale(p, u) {
     // The fossil holds in quiet water and slowly fades to black. Then the jaws burst out within a very short scroll.
-    const zoomOut = span(p, .984, .998);
     const lerp = (x, a, b, from, to) => from + (to - from) * clamp((x - a) / (b - a));
     // Clip frames: 0-120 fossil, 120-172 darkness, 173-240 jaws lunge (of 240).
     const clipProgress = p < .958 ? lerp(p, .940, .958, 0, .5)
@@ -212,13 +219,30 @@
     setOpacity(abyssVeil, p < LUNGE_AT ? .97 * span(p, .958, .964) : 0);
     setOpacity(deepInk, .96 * pulse(p, .977, .983, .986, .993));
     deepInk.style.transform = `scale(${(1.08 + .3 * span(p, .977, .993)).toFixed(3)})`;
-    setOpacity(calmReturn, span(p, .984, .993));
-    calmReturn.style.transform = `scale(${(2.7 - 1.7 * zoomOut).toFixed(3)})`;
-    setOpacity(finalTitle, span(p, .994, .999));
-    finalTitle.setAttribute('aria-hidden', String(p < .994));
-    finalTitle.style.transform = `translate(-50%, ${(16 * (1 - span(p, .994, .999))).toFixed(1)}px)`;
+    // Afterword: the camera pulls back from the fossil while a colossal shape passes in the dark (u is 0-1 through the tail).
+    showReturnFrame(u / .9);
+    setOpacity(returnStage, span(u, 0, .05) * (1 - span(u, .88, .94)));
+    // Scope bars slide in, grain rises, then the title tracks out of the black.
+    const bars = span(u, .06, .22);
+    letterboxTop.style.transform = `translateY(${(-100 + 100 * bars).toFixed(2)}%)`;
+    letterboxBottom.style.transform = `translateY(${(100 - 100 * bars).toFixed(2)}%)`;
+    setOpacity(filmGrain, .2 * span(u, .02, .2));
+    const title = span(u, .9, .97);
+    setOpacity(finalTitle, title);
+    finalTitle.setAttribute('aria-hidden', String(u < .9));
+    finalTitle.style.setProperty('--track', `${(.18 + .42 * span(u, .9, 1)).toFixed(3)}em`);
+    finalTitle.style.setProperty('--rule', span(u, .94, 1).toFixed(3));
+    finalTitle.style.filter = `blur(${(10 * (1 - span(u, .9, .96))).toFixed(1)}px)`;
+    finalTitle.style.transform = `translate(-50%, -50%) scale(${(1.08 - .08 * span(u, .9, 1)).toFixed(3)})`;
   }
-  const renderJourney = (progress) => {
+  // Scroll runs 2000vh. The old timeline keeps its pixel pacing (RATE), and the extra scroll after it plays the ending.
+  const RATE = 1900 / 1700;
+  const TAIL_START = .984 / RATE;
+  const renderJourney = (scroll) => {
+    const progress = Math.min(1, scroll * RATE);
+    const tail = clamp((scroll - TAIL_START) / (1 - TAIL_START));
+    showDiveFrame(progress / .2);
+    setOpacity(diveStage, 1 - span(progress, .213, .225));
     render(progress / .29);
     showBlacktipFrame((progress - .205) / .115);
     renderWhales((progress - .33) / .12);
@@ -226,7 +250,7 @@
     showHammerGreatWhiteFrame((progress - .55) / .26);
     showSixgillFrame((progress - .81) / .128);
     renderDeep((progress - .55) / .45);
-    renderFinale(progress);
+    renderFinale(progress, tail);
     // Look upward as the blacktip leaves, then let the watercolor light cover the handoff.
     setOpacity(blacktipStage, span(progress, .195, .213) * (1 - span(progress, .339, .350)));
     blacktipStage.style.transform = `scale(${(1 + .12 * span(progress, .310, .349)).toFixed(3)}) translateY(${(9 * span(progress, .310, .349)).toFixed(2)}%)`;
