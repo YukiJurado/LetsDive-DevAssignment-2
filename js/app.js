@@ -120,20 +120,47 @@
   });
 
   // Each video is exported as images so scrolling can move its frames both ways.
+  // Frames are painted onto a canvas instead of swapping an <img> source: that never flashes blank,
+  // and if a frame has not loaded yet the nearest loaded frame stays on screen, so reverse scrolling cannot glitch.
   function setupFrameSequence(image, stage, folder, count) {
+    const canvas = document.createElement('canvas');
+    canvas.className = image.className;
+    canvas.setAttribute('aria-hidden', 'true');
+    image.replaceWith(canvas);
+    const context = canvas.getContext('2d');
+    const loaded = new Array(count).fill(false);
+    let wanted = 0;
+    let drawn = -1;
+    function paint() {
+      let index = wanted;
+      for (let offset = 1; !loaded[index] && offset < count; offset += 1) {
+        if (wanted - offset >= 0 && loaded[wanted - offset]) index = wanted - offset;
+        else if (wanted + offset < count && loaded[wanted + offset]) index = wanted + offset;
+      }
+      if (!loaded[index] || index === drawn) return;
+      const frame = frames[index];
+      if (canvas.width !== frame.naturalWidth || canvas.height !== frame.naturalHeight) {
+        canvas.width = frame.naturalWidth;
+        canvas.height = frame.naturalHeight;
+      }
+      context.drawImage(frame, 0, 0);
+      drawn = index;
+      canvas.dataset.frame = String(index);
+    }
     const frames = Array.from({ length: count }, (_, index) => {
       const frame = new Image();
+      frame.decoding = 'async';
+      frame.onload = () => {
+        loaded[index] = true;
+        if (index === 0) stage.classList.add('sequence-ready');
+        paint();
+      };
       frame.src = `${folder}/frame-${String(index + 1).padStart(3, '0')}.jpg`;
       return frame;
     });
-    image.addEventListener('load', () => stage.classList.add('sequence-ready'));
-    if (image.complete && image.naturalWidth) stage.classList.add('sequence-ready');
-    let shownFrame = 0;
     return (progress) => {
-      const nextFrame = Math.min(count - 1, Math.round(clamp(progress) * (count - 1)));
-      if (nextFrame === shownFrame) return;
-      shownFrame = nextFrame;
-      image.src = frames[nextFrame].src;
+      wanted = Math.min(count - 1, Math.round(clamp(progress) * (count - 1)));
+      paint();
     };
   }
   const showWhaleFrame = setupFrameSequence(whaleAnimation, whaleStage, 'assets/video/blacktip-to-whales-frames', 120);

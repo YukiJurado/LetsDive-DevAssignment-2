@@ -394,7 +394,7 @@ body {
   opacity: 0;
   pointer-events: none;
 }
-.whale-hammer-stage img {
+.whale-hammer-stage img, .whale-hammer-stage canvas {
   position: absolute;
   inset: 0;
   width: 100%;
