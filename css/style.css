@@ -523,6 +523,15 @@ body {
   filter: blur(12px);
   will-change: opacity;
 }
+.abyss-veil {
+  position: absolute;
+  z-index: 17;
+  inset: 0;
+  opacity: 0;
+  pointer-events: none;
+  background: radial-gradient(ellipse at 51% 42%, #020613 0%, #01040c 75%);
+  will-change: opacity;
+}
 .final-title {
   position: absolute;
   z-index: 18;
@@ -615,7 +624,7 @@ body {
   .blacktip-stage, .whale-stage {
     display: none;
   }
-  .whale-hammer-stage, .hammer-greatwhite-stage, .sixgill-video-stage, .sixgill-entry-veil, .final-title {
+  .whale-hammer-stage, .hammer-greatwhite-stage, .sixgill-video-stage, .sixgill-entry-veil, .abyss-veil, .final-title {
     display: none;
   }
   .deep-stage {

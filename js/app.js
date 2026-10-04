@@ -34,6 +34,7 @@
   const sixgillVideoStage = q('.sixgill-video-stage');
   const sixgillAnimation = q('.sixgill-animation');
   const sixgillEntryVeil = q('.sixgill-entry-veil');
+  const abyssVeil = q('.abyss-veil');
   const deepStage = q('.deep-stage');
   const greatWhiteBelly = q('.great-white-belly');
   const greatWhiteEye = q('.great-white-eye');
@@ -63,6 +64,7 @@
   const splash = new Audio('assets/audio/splash-entry.mp3');
   const glide = new Audio('assets/audio/shark-glide.mp3');
   const inkImpact = new Audio('assets/audio/deep-ink-impact.mp3');
+  const lunge = new Audio('assets/audio/megalodon-lunge.mp3');
   ambience.loop = true;
   deepAmbience.loop = true;
   ambience.volume = 0;
@@ -70,6 +72,7 @@
   splash.volume = 0.65;
   glide.volume = 0.45;
   inkImpact.volume = 0.72;
+  lunge.volume = 0.8;
   let soundEnabled = false;
   let lastProgress = 0;
   function playEffect(sound) {
@@ -80,7 +83,7 @@
   function updateSound(progress) {
     const underwater = progress >= .16;
     const depth = span(progress, .69, .82);
-    const silence = 1 - .92 * pulse(progress, .936, .952, .977, .991);
+    const silence = 1 - .98 * pulse(progress, .95, .96, .973, .99);
     ambience.volume = .3 * span(progress, .16, .25) * (1 - .75 * depth) * silence;
     deepAmbience.volume = .22 * depth * silence;
     if (soundEnabled && underwater) {
@@ -91,7 +94,8 @@
       if (lastProgress < .51 && progress >= .51) playEffect(glide);
       if (lastProgress < .75 && progress >= .75) playEffect(glide);
       if (lastProgress < .82 && progress >= .82) playEffect(glide);
-      if (lastProgress < .961 && progress >= .961) playEffect(inkImpact);
+      if (lastProgress < .9688 && progress >= .9688) playEffect(lunge);
+      if (lastProgress < .979 && progress >= .979) playEffect(inkImpact);
     } else {
       ambience.pause();
       deepAmbience.pause();
@@ -192,20 +196,21 @@
     setOpacity(deepParticles, .35 * span(p, .15, .3) * (1 - span(p, .84, .9)) + .13 * span(p, .96, 1));
   }
   function renderFinale(p) {
-    // Hold on the fossil, push into it, then reverse the camera move after the vision.
-    const zoomIn = span(p, .938, .959);
-    const zoomOut = span(p, .982, .998);
-    setOpacity(tooth, span(p, .936, .946) * (1 - span(p, .96, .967)));
+    // The fossil holds in quiet water. Darkness hides the ancient vision until the jaws lunge.
+    const zoomIn = span(p, .938, .956);
+    const zoomOut = span(p, .984, .998);
+    setOpacity(tooth, span(p, .936, .946) * (1 - span(p, .978, .984)));
     tooth.style.transform = `scale(${(1 + 1.7 * zoomIn).toFixed(3)})`;
-    setOpacity(mouth, span(p, .958, .963) * (1 - span(p, .973, .979)));
-    mouth.style.transform = `scale(${(1.05 + 1.35 * span(p, .96, .976)).toFixed(3)})`;
-    setOpacity(deepInk, .9 * pulse(p, .972, .978, .982, .99));
-    deepInk.style.transform = `scale(${(1.08 + .3 * span(p, .972, .988)).toFixed(3)})`;
-    setOpacity(calmReturn, span(p, .982, .991));
+    setOpacity(abyssVeil, p < .9688 ? .97 * span(p, .956, .967) : 0);
+    setOpacity(mouth, p >= .9688 ? 1 - span(p, .979, .984) : 0);
+    mouth.style.transform = `scale(${(1.08 + 1.72 * span(p, .9688, .978)).toFixed(3)})`;
+    setOpacity(deepInk, .96 * pulse(p, .977, .983, .986, .993));
+    deepInk.style.transform = `scale(${(1.08 + .3 * span(p, .977, .993)).toFixed(3)})`;
+    setOpacity(calmReturn, span(p, .984, .993));
     calmReturn.style.transform = `scale(${(2.7 - 1.7 * zoomOut).toFixed(3)})`;
-    setOpacity(finalTitle, span(p, .992, .999));
-    finalTitle.setAttribute('aria-hidden', String(p < .992));
-    finalTitle.style.transform = `translate(-50%, ${(16 * (1 - span(p, .992, .999))).toFixed(1)}px)`;
+    setOpacity(finalTitle, span(p, .994, .999));
+    finalTitle.setAttribute('aria-hidden', String(p < .994));
+    finalTitle.style.transform = `translate(-50%, ${(16 * (1 - span(p, .994, .999))).toFixed(1)}px)`;
   }
   const renderJourney = (progress) => {
     render(progress / .29);

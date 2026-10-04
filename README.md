@@ -6,13 +6,13 @@ This repository contains a reversible scroll journey through the complete planne
 
 The three files to read are `index.html` (scene layers and links), `css/style.css` (their appearance), and `js/app.js` (scroll timing, animation frames, and optional sound). The HTML loads the CSS in `<head>` and loads the JavaScript after the scene markup. Image and media files live in `assets/`. For a local preview, run `python3 -m http.server 8765` here and open `http://localhost:8765/`.
 
-The preview uses GSAP ScrollTrigger when its CDN scripts are available and falls back to native scroll progress when offline. A short scroll glide and eased watercolor dissolves smooth both directions. It respects reduced-motion preferences by showing three still views. The animation clips use JPEG frames that follow scroll position in either direction; their source MP4s are kept in `assets/video/` for reference. The top-right sound button starts or stops separate splash, underwater ambience, deep-water ambience, shark-glide, and megalodon impact effects. Sound begins only after the visitor presses it.
+The preview uses GSAP ScrollTrigger when its CDN scripts are available and falls back to native scroll progress when offline. A short scroll glide and eased watercolor dissolves smooth both directions. It respects reduced-motion preferences by showing three still views. The animation clips use JPEG frames that follow scroll position in either direction; their source MP4s are kept in `assets/video/` for reference. The top-right sound button starts or stops separate splash, underwater ambience, deep-water ambience, shark-glide, megalodon lunge, and ink impact effects. Sound begins only after the visitor presses it.
 
 ## Story order
 
 Diving mask → blacktip reef shark → whale sharks → hammerheads → great white → top-view sixgill → fossil tooth zoom → megalodon mouth → zoom back out → fin.
 
-The sharks and ocean share one hand-painted watercolor style. The opening mask carries “lets dive!” and the ending says “fin”; the underwater story has no narration. The megalodon is an ancient vision, not a living shark in the present-day ocean. The fossil after the vision is the exact same image as the fossil held at the end of the sixgill shot.
+The sharks and ocean share one hand-painted watercolor style. The opening mask carries “lets dive!” and the ending says “fin”; the underwater story has no narration. The megalodon is an ancient vision, not a living shark in the present-day ocean. The fossil after the vision is the exact same image as the fossil held at the end of the sixgill shot. Its close-up lingers in near silence before the water blacks out and the mouth lunges forward in a short scroll interval.
 
 ## Current status
 
