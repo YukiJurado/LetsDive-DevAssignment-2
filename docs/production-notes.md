@@ -112,8 +112,9 @@ Sound stays opt-in. The visitor chooses "Dive in with sound" on the entry gate (
 - `music-sunlit.mp3` (58 s, loops): "Dancing Sunbeams on Coral Waves". Soft acoustic guitar and ukulele, marimba and glockenspiel, airy flute, a faint shaker, about 78 BPM, major key.
 - `music-deep.mp3` (58 s, loops): "Twilight Abyss". Low swelling synth drones, cold detuned piano, sparse dissonant bell tones, slow sub-bass, minor key, no resolution.
 - `sfx-feeding.mp3` (5 s): a great white feeding on fish: a heavy muffled jaw snap and crunch, churning water and bubbles, fish darting away, a second quieter chomp.
+- `sfx-megalodon-roar.mp3` (5 s): a soft, deep, low roar of a gigantic sea creature with a slow smooth swell and no sharp attack. It plays when the jaws open at `LUNGE_AT`. See "Why the lunge sound was replaced" below.
 - `sfx-megalodon.mp3` (10 s): a very deep, slow animal groan, a sub-bass swell, heavy water displacement, a long fading rumble.
-- Every prompt said no vocals, no breathing, no gasps, no screams. The music prompts also said instrumental only and no sound effects.
+- Every prompt said no vocals, no breathing, no gasps, no screams. `sfx-megalodon.mp3` is now only the distant groan for the silhouette in the pull-back. The music prompts also said instrumental only and no sound effects.
 - The two music files were turned into seamless loops: 60 s source, first 2 s and last 2 s crossfaded into one 58 s file. The effects were loudness-normalized (feeding to about -17 LUFS, megalodon to about -16 LUFS, true peak -1.5 dB) because the feeding source peaked above 0 dBFS. The music keeps its generated level (about -19 and -21 LUFS) and is mixed down with the volume numbers in `updateSound`.
 
 ### How the score moves
@@ -126,10 +127,10 @@ Sound stays opt-in. The visitor chooses "Dive in with sound" on the entry gate (
 | .40 to .70 | Deep score fades in (0.38 volume) and the deep ambience builds |
 | .842 to .884 | While the great white feeds, the deep score ducks by 40% |
 | .950 to .990 | Everything drops out for the dark hold before the megalodon (`silence`) |
-| `LUNGE_AT` (.9672) | Lunge plus the megalodon roar |
+| `LUNGE_AT` (.9672) | A soft, deep megalodon roar as the jaws open (the old lunge sound is no longer played) |
 | .979 | Ink impact |
 | tail .02 to .2 | Deep score returns for the pull-back |
-| tail .38 | The megalodon effect plays again at 0.5 volume as the silhouette appears |
+| tail .38 | The longer megalodon groan (`sfx-megalodon.mp3`) plays at 0.5 volume as the silhouette appears |
 | tail .8 to 1 | Deep score thins to about 45% for "fin" |
 
 ### One-shot effects
@@ -143,3 +144,12 @@ Sound stays opt-in. The visitor chooses "Dive in with sound" on the entry gate (
 - Volumes and fade ranges are the numbers at the top of `updateSound`. If a clip is retimed, move the feeding trigger (.845), `LUNGE_AT`, and the tail trigger (.38) with it.
 - Layers are only played while audible (`setLayer`), so silent loops do not keep decoding.
 - I could not listen to the audio here. The mix was checked by measuring loudness and by logging each layer's volume at points through the journey. Please listen on your own speakers or headphones and adjust the volume numbers to taste.
+
+### Why the lunge sound was replaced
+
+- When the megalodon's mouth opened, the site played the original `assets/audio/megalodon-lunge.mp3` (a whoosh and jaw snap made earlier in Magnific) and, for one version, my new groan on top. A gasp was audible at that moment.
+- Measured, the old lunge has a hard start (peak -0.4 dBFS within the first 150 ms) and about 40 dB more energy above 1.5 kHz than the new sounds (-26 dB against -63 to -69 dB). That broadband burst is what reads as a gasp.
+- `megalodon-lunge.mp3` is no longer played or loaded. The file is still in `assets/audio/`, unused, and can be deleted.
+- The replacement is `assets/audio/sfx-megalodon-roar.mp3` (ElevenLabs Text to Sound v2, 5 s). Its prompt asked for a soft, deep, low roar of a gigantic ancient sea creature, a smooth slow rising rumble that opens into a warm low growl, a round onset with no sharp attack, and explicitly no inhale, exhale, breathing, gasp, voice-like sound, screech, scream or music. It was loudness-normalized to about -18 LUFS (true peak -1.5 dB) with a 0.2 s fade-in and a 0.7 s fade-out. Its first 150 ms is at -73 dBFS and it has almost no energy above 1.5 kHz.
+- The same check was run on the longer groan used for the silhouette: also a smooth start and no high-frequency content.
+- To retune, edit `megalodonRoar.volume` (0.8) in `js/app.js`. The roar starts exactly at `LUNGE_AT`.

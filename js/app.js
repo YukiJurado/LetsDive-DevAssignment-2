@@ -77,8 +77,7 @@
   const glide = new Audio('assets/audio/shark-glide.mp3');
   const feeding = new Audio('assets/audio/sfx-feeding.mp3');
   const inkImpact = new Audio('assets/audio/deep-ink-impact.mp3');
-  const lunge = new Audio('assets/audio/megalodon-lunge.mp3');
-  const megalodonRoar = new Audio('assets/audio/sfx-megalodon.mp3');
+  const megalodonRoar = new Audio('assets/audio/sfx-megalodon-roar.mp3');
   const megalodonPass = new Audio('assets/audio/sfx-megalodon.mp3');
   [musicSunlit, musicDeep].forEach((track) => { track.loop = true; track.preload = 'auto'; track.volume = 0; });
   ambience.loop = true;
@@ -89,8 +88,7 @@
   glide.volume = 0.45;
   feeding.volume = 0.85;
   inkImpact.volume = 0.72;
-  lunge.volume = 0.8;
-  megalodonRoar.volume = 0.9;
+  megalodonRoar.volume = 0.8;
   megalodonPass.volume = 0.5;
   let soundEnabled = false;
   let lastProgress = 0;
@@ -133,11 +131,9 @@
       // The great white feeds among the school of fish.
       if (lastProgress < .845 && progress >= .845) playEffect(feeding);
       if (lastProgress < .89 && progress >= .89) playEffect(glide);
-      // The megalodon appears: the jaws burst out, then its silhouette passes in the dark.
-      if (lastProgress < LUNGE_AT && progress >= LUNGE_AT) {
-        playEffect(lunge);
-        playEffect(megalodonRoar);
-      }
+      // The megalodon appears: a soft, deep roar as the jaws open, then a distant groan when its silhouette passes in the dark.
+      // (The older megalodon-lunge.mp3 is no longer played because it contained a gasp.)
+      if (lastProgress < LUNGE_AT && progress >= LUNGE_AT) playEffect(megalodonRoar);
       if (lastProgress < .979 && progress >= .979) playEffect(inkImpact);
       if (lastTail < .38 && tail >= .38) playEffect(megalodonPass);
     }
