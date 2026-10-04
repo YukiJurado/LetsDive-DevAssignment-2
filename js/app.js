@@ -57,7 +57,7 @@
   const deepInk = q('.deep-ink');
   const soundToggle = q('.sound-toggle');
   const clamp = (x) => Math.max(0, Math.min(1, x));
-  // Scroll point where the jaws first burst out of the dark (frame 168 of the 241-frame clip).
+  // Scroll point where the jaws first burst out of the dark (frame 172 of the 241-frame clip).
   const LUNGE_AT = .9672;
   // Eased fades make watercolor frames dissolve without visible linear seams.
   const span = (x, a, b) => {
@@ -237,15 +237,13 @@
   function renderFinale(p, u) {
     // The fossil holds in quiet water and slowly fades to black. Then the jaws burst out within a very short scroll.
     const lerp = (x, a, b, from, to) => from + (to - from) * clamp((x - a) / (b - a));
-    // Clip frames: 0-124 painted fossil, 124-168 fading to ink-black, 168-240 jaws lunge (of 240).
-    const clipProgress = p < .958 ? lerp(p, .940, .958, 0, .5167)
-      : p < LUNGE_AT ? lerp(p, .958, LUNGE_AT, .5167, .7)
-      : lerp(p, LUNGE_AT, .9795, .7, 1);
+    // Clip frames: 0-118 fossil, 118-172 fading to black, 172-240 jaws lunge (of 240).
+    const clipProgress = p < .958 ? lerp(p, .940, .958, 0, .4917)
+      : p < LUNGE_AT ? lerp(p, .958, LUNGE_AT, .4917, .7167)
+      : lerp(p, LUNGE_AT, .9795, .7167, 1);
     showMegalodonFrame(clipProgress);
-    setOpacity(megalodonStage, span(p, .935, .947) * (1 - span(p, .979, .984)));
-    // The painted fossil melts in from the photographic one like wet watercolor.
-    megalodonStage.style.filter = `blur(${(16 * (1 - span(p, .935, .950))).toFixed(1)}px) saturate(${(.6 + .4 * span(p, .935, .950)).toFixed(2)})`;
-    megalodonStage.style.transform = `scale(${(1 + .1 * span(p, .940, .958) * (1 - span(p, .958, .961))).toFixed(3)})`;
+    setOpacity(megalodonStage, span(p, .936, .943) * (1 - span(p, .979, .984)));
+    megalodonStage.style.transform = `scale(${(1 + .04 * span(p, .940, .958) * (1 - span(p, .958, .961))).toFixed(3)})`;
     setOpacity(abyssVeil, p < LUNGE_AT ? .97 * span(p, .958, .964) : 0);
     setOpacity(deepInk, .96 * pulse(p, .977, .983, .986, .993));
     deepInk.style.transform = `scale(${(1.08 + .3 * span(p, .977, .993)).toFixed(3)})`;
@@ -315,7 +313,7 @@
     // Keep the existing hammerhead arrival, then follow the user's clip into the great white.
     setOpacity(hammerGreatWhiteStage, span(progress, .547, .557) * (1 - span(progress, .806, .822)));
     // The sixgill clip's last frame is the first frame of the megalodon clip, so the handoff is seamless.
-    setOpacity(sixgillVideoStage, span(progress, .808, .818) * (1 - span(progress, .936, .947)));
+    setOpacity(sixgillVideoStage, span(progress, .808, .818) * (1 - span(progress, .936, .943)));
     const entryInk = .38 * pulse(progress, .806, .811, .813, .822);
     const seabedSilt = .22 * pulse(progress, .937, .942, .948, .954);
     setOpacity(sixgillEntryVeil, Math.max(entryInk, seabedSilt));
