@@ -56,7 +56,7 @@ Everything below was added after the earlier notes. The ending clips use Seedanc
 ### Great white feeding
 
 - The great white feeding among the school of fish is the first seconds of `great-white-to-sixgill-seabed-frames` (frames 1 to about 72). It was nearly invisible: it had very little scroll and a heavy black ink veil covered the handoff.
-- It now gets about 85vh of scroll, the entry veil is only a light dip, and the empty dark water after it is crossed quickly (`sixgillFrame` in `renderJourney`).
+- It now gets about 60vh of scroll, and the empty dark water after it is crossed quickly (`sixgillFrame` in `renderJourney`). The handoff into it is the bridge clip below, so there is no veil or crossfade at that point any more.
 - Style: the original feeding clip was dark and gritty next to the smooth, bright hammerhead and great-white clips. The first 6 seconds of `assets/video/great-white-to-sixgill-user-v1.mp4` were restyled in Magnific Modify video (MiniMax H3, 2K, 6.6 s) with a prompt asking for the smooth stylized cobalt-blue look and neutral gums, keeping all motion. The result replaces seabed frames 1 to 72 at 12 fps, retimed to 6 s. Frames 65 to 72 fade into the original dark water so the shark leaves cleanly. The original frames remain in git history.
 - The restyled source is not stored in the repo. Only the blended frames are.
 
@@ -94,3 +94,11 @@ The journey used to start cold: the page opened straight onto the mask. A websit
 ### Duplicate files from iCloud sync
 
 The project folder sits inside the Desktop, which has iCloud Desktop sync turned on. Syncing hundreds of frame files while they were being rewritten made macOS create identical conflict copies named like `frame-001 2.jpg` and `frame-001 3.jpg`. Some of them were committed once by accident and were removed in the commit "Remove stray duplicate frame files". `.gitignore` now ignores any file ending in a space, a digit and an extension, so they cannot be committed again.
+
+### Great white bridge (no more double exposure)
+
+- **Problem.** The great white clip ended on a side view of the shark, and the feeding clip began with a head-on shark inside a school of fish. Crossfading the two put two different sharks on screen at once, a ghostly double exposure that was obvious however short it was.
+- **Fix.** `assets/video/great-white-bridge-v1.mp4` (Seedance 2.5, 16:9, 720p, 6 s, sound off) starts on the exact last frame of the hammerhead-to-great-white clip and ends on the first frame of the feeding scene. Prompt summary: one continuous underwater shot in the smooth stylized look; the great white glides forward through dark navy water, then slowly turns toward the camera; the water brightens to cobalt as a swarm of silver fish streams in from all sides; it ends head-on, mouth slightly open, in the middle of the swirling school; a single shark throughout, no cuts.
+- **Frames.** Bridge frames 2 to 73 (frame 1 repeats the last frame of the old clip) were exported at 12 fps and 960x540 as frames 278 to 349 of `assets/video/hammerhead-to-great-white-user-frames/`, so that sequence now has 349 frames. The ends were checked against their neighbours and match.
+- **Timing (`renderJourney` in `js/app.js`).** Frames 1 to 277 still run over journey progress .55 to .81. The bridge (frames 278 to 349) runs over .81 to .84. The feeding scene then starts at .84, so its seabed frames 0 to 70 run over .840 to .874, the empty dark water over .874 to .887, and the rest over .887 to .938 (about 20% faster than before to make room). The two stages swap with a very short fade (.836 to .846) between almost identical frames. The glide sound that used to play at .82 now plays at .84. The Great White caption window is .745 to .890 and the Sixgill caption is .893 to .938.
+- **If a clip changes.** Keep the ends matching their neighbours (last frame of the great white clip, first frame of the feeding scene) and retime the numbers above.

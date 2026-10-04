@@ -29,7 +29,7 @@ Visual prompts and intro decisions are recorded in [`docs/intro-art-prompts.md`]
 
 ## Change log
 
-- **Latest:** an entry gate, header with chapter links, live depth gauge, closing section with credits and a back-to-surface button (new `js/site.js`); intro dive video replaces the zooming stills; the great white feeding is visible again with its own scroll time and a restyled, smoother look; the megalodon ending is rebuilt in the same dark photographic look as the sixgill shot's fossil tooth; each shark has a magical caption; "fin" is a cinematic title card; video frames are drawn on a canvas so scrolling back cannot glitch. Details and file names are in [`docs/production-notes.md`](docs/production-notes.md).
+- **Latest:** the great white now turns into the feeding scene through a short bridge clip instead of a crossfade, so the handoff no longer shows two sharks at once; an entry gate, header with chapter links, live depth gauge, closing section with credits and a back-to-surface button (new `js/site.js`); intro dive video replaces the zooming stills; the great white feeding is visible again with its own scroll time and a restyled, smoother look; the megalodon ending is rebuilt in the same dark photographic look as the sixgill shot's fossil tooth; each shark has a magical caption; "fin" is a cinematic title card; video frames are drawn on a canvas so scrolling back cannot glitch. Details and file names are in [`docs/production-notes.md`](docs/production-notes.md).
 
 ## Working in this folder
 

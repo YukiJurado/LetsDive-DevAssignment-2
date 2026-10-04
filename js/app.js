@@ -102,7 +102,7 @@
       if (lastProgress < .24 && progress >= .24) playEffect(glide);
       if (lastProgress < .51 && progress >= .51) playEffect(glide);
       if (lastProgress < .75 && progress >= .75) playEffect(glide);
-      if (lastProgress < .82 && progress >= .82) playEffect(glide);
+      if (lastProgress < .84 && progress >= .84) playEffect(glide);
       if (lastProgress < LUNGE_AT && progress >= LUNGE_AT) playEffect(lunge);
       if (lastProgress < .979 && progress >= .979) playEffect(inkImpact);
     } else {
@@ -175,7 +175,7 @@
   const showBlacktipFrame = setupFrameSequence(blacktipAnimation, blacktipStage, 'assets/video/blacktip-reef-user-frames', 121, true);
   const showWhaleFrame = setupFrameSequence(whaleAnimation, whaleStage, 'assets/video/blacktip-to-whales-frames', 120);
   const showHammerFrame = setupFrameSequence(hammerAnimation, whaleHammerStage, 'assets/video/whales-to-hammerhead-frames', 120);
-  const showHammerGreatWhiteFrame = setupFrameSequence(hammerGreatWhiteAnimation, hammerGreatWhiteStage, 'assets/video/hammerhead-to-great-white-user-frames', 277);
+  const showHammerGreatWhiteFrame = setupFrameSequence(hammerGreatWhiteAnimation, hammerGreatWhiteStage, 'assets/video/hammerhead-to-great-white-user-frames', 349);
   const showSixgillFrame = setupFrameSequence(sixgillAnimation, sixgillVideoStage, 'assets/video/great-white-to-sixgill-seabed-frames', 481);
   const showMegalodonFrame = setupFrameSequence(megalodonAnimation, megalodonStage, 'assets/video/megalodon-jumpscare-frames', 241);
   const showReturnFrame = setupFrameSequence(returnAnimation, returnStage, 'assets/video/return-fossil-frames', 241);
@@ -277,8 +277,8 @@
     blacktip: [.226, .245, .300, .325],
     whale: [.402, .416, .438, .452],
     hammerhead: [.514, .528, .565, .582],
-    greatwhite: [.745, .765, .840, .858],
-    sixgill: [.884, .900, .926, .936],
+    greatwhite: [.745, .765, .874, .890],
+    sixgill: [.893, .905, .928, .938],
     megalodon: [.300, .400, .620, .740]
   };
   function renderCaptions(p, u) {
@@ -305,11 +305,13 @@
     showBlacktipFrame((progress - .205) / .115);
     renderWhales((progress - .33) / .12);
     showHammerFrame((progress - .45) / .10);
-    showHammerGreatWhiteFrame((progress - .55) / .26);
+    // Frames 1-277 are the user's hammerhead-to-great-white clip; 278-349 are the bridge where the same shark turns into the feeding school.
+    const greatWhiteFrame = progress < .81 ? 276 * clamp((progress - .55) / .26) : 276 + 72 * clamp((progress - .81) / .03);
+    showHammerGreatWhiteFrame(greatWhiteFrame / 348);
     // Slow down for the great white feeding among the fish (frames 0-70), rush through the empty dark water (70-170), then play the sixgill and seabed at near normal pace.
-    const sixgillFrame = progress < .858 ? 70 * clamp((progress - .81) / .048)
-      : progress < .873 ? 70 + 100 * clamp((progress - .858) / .015)
-      : 170 + 310 * clamp((progress - .873) / .065);
+    const sixgillFrame = progress < .874 ? 70 * clamp((progress - .840) / .034)
+      : progress < .887 ? 70 + 100 * clamp((progress - .874) / .013)
+      : 170 + 310 * clamp((progress - .887) / .051);
     showSixgillFrame(sixgillFrame / 480);
     renderDeep((progress - .55) / .45);
     renderFinale(progress, tail);
@@ -321,10 +323,11 @@
     setOpacity(whaleHammerStage, span(progress, .445, .475) * (1 - span(progress, .585, .60)));
     setOpacity(deepStage, span(progress, .545, .585));
     // Keep the existing hammerhead arrival, then follow the user's clip into the great white.
-    setOpacity(hammerGreatWhiteStage, span(progress, .547, .557) * (1 - span(progress, .806, .822)));
+    setOpacity(hammerGreatWhiteStage, span(progress, .547, .557) * (1 - span(progress, .838, .846)));
     // The sixgill clip's last frame is the first frame of the megalodon clip, so the handoff is seamless.
-    setOpacity(sixgillVideoStage, span(progress, .808, .818) * (1 - span(progress, .936, .943)));
-    const entryInk = .38 * pulse(progress, .806, .811, .813, .822);
+    setOpacity(sixgillVideoStage, span(progress, .836, .842) * (1 - span(progress, .936, .943)));
+    // The bridge clip carries the great white into the feeding scene, so no veil or dissolve is needed at this handoff.
+    const entryInk = 0;
     const seabedSilt = .22 * pulse(progress, .937, .942, .948, .954);
     setOpacity(sixgillEntryVeil, Math.max(entryInk, seabedSilt));
     setOpacity(firstHandoffWash, pulse(progress, .320, .329, .343, .355));
