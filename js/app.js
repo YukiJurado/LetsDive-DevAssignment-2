@@ -43,6 +43,7 @@
   const letterboxTop = q('.letterbox-top');
   const letterboxBottom = q('.letterbox-bottom');
   const filmGrain = q('.film-grain');
+  const sharkCaptions = [...document.querySelectorAll('.shark-caption')];
   const abyssVeil = q('.abyss-veil');
   const deepStage = q('.deep-stage');
   const greatWhiteBelly = q('.great-white-belly');
@@ -56,7 +57,7 @@
   const deepInk = q('.deep-ink');
   const soundToggle = q('.sound-toggle');
   const clamp = (x) => Math.max(0, Math.min(1, x));
-  // Scroll point where the jaws first burst out of the dark (frame 173 of the 241-frame clip).
+  // Scroll point where the jaws first burst out of the dark (frame 168 of the 241-frame clip).
   const LUNGE_AT = .9672;
   // Eased fades make watercolor frames dissolve without visible linear seams.
   const span = (x, a, b) => {
@@ -209,19 +210,21 @@
   function renderFinale(p, u) {
     // The fossil holds in quiet water and slowly fades to black. Then the jaws burst out within a very short scroll.
     const lerp = (x, a, b, from, to) => from + (to - from) * clamp((x - a) / (b - a));
-    // Clip frames: 0-120 fossil, 120-172 darkness, 173-240 jaws lunge (of 240).
-    const clipProgress = p < .958 ? lerp(p, .940, .958, 0, .5)
-      : p < LUNGE_AT ? lerp(p, .958, LUNGE_AT, .5, .7167)
-      : lerp(p, LUNGE_AT, .9795, .7167, 1);
+    // Clip frames: 0-124 painted fossil, 124-168 fading to ink-black, 168-240 jaws lunge (of 240).
+    const clipProgress = p < .958 ? lerp(p, .940, .958, 0, .5167)
+      : p < LUNGE_AT ? lerp(p, .958, LUNGE_AT, .5167, .7)
+      : lerp(p, LUNGE_AT, .9795, .7, 1);
     showMegalodonFrame(clipProgress);
-    setOpacity(megalodonStage, span(p, .936, .942) * (1 - span(p, .979, .984)));
-    megalodonStage.style.transform = `scale(${(1 + .35 * span(p, .940, .958) * (1 - span(p, .958, .961))).toFixed(3)})`;
+    setOpacity(megalodonStage, span(p, .935, .947) * (1 - span(p, .979, .984)));
+    // The painted fossil melts in from the photographic one like wet watercolor.
+    megalodonStage.style.filter = `blur(${(16 * (1 - span(p, .935, .950))).toFixed(1)}px) saturate(${(.6 + .4 * span(p, .935, .950)).toFixed(2)})`;
+    megalodonStage.style.transform = `scale(${(1 + .1 * span(p, .940, .958) * (1 - span(p, .958, .961))).toFixed(3)})`;
     setOpacity(abyssVeil, p < LUNGE_AT ? .97 * span(p, .958, .964) : 0);
     setOpacity(deepInk, .96 * pulse(p, .977, .983, .986, .993));
     deepInk.style.transform = `scale(${(1.08 + .3 * span(p, .977, .993)).toFixed(3)})`;
     // Afterword: the camera pulls back from the fossil while a colossal shape passes in the dark (u is 0-1 through the tail).
     showReturnFrame(u / .9);
-    setOpacity(returnStage, span(u, 0, .05) * (1 - span(u, .88, .94)));
+    setOpacity(returnStage, span(u, 0, .05));
     // Scope bars slide in, grain rises, then the title tracks out of the black.
     const bars = span(u, .06, .22);
     letterboxTop.style.transform = `translateY(${(-100 + 100 * bars).toFixed(2)}%)`;
@@ -236,6 +239,26 @@
     finalTitle.style.transform = `translate(-50%, -50%) scale(${(1.08 - .08 * span(u, .9, 1)).toFixed(3)})`;
   }
   // Scroll runs 2000vh. The old timeline keeps its pixel pacing (RATE), and the extra scroll after it plays the ending.
+  // Each caption: [fade in start, fully in, begin fade out, gone]. All but the megalodon use journey progress; the megalodon uses the ending tail.
+  const captionWindows = {
+    blacktip: [.226, .245, .300, .325],
+    whale: [.402, .416, .438, .452],
+    hammerhead: [.514, .528, .565, .582],
+    greatwhite: [.745, .765, .840, .858],
+    sixgill: [.884, .900, .926, .936],
+    megalodon: [.300, .400, .620, .740]
+  };
+  function renderCaptions(p, u) {
+    sharkCaptions.forEach((caption) => {
+      const [a, b, c, d] = captionWindows[caption.dataset.shark];
+      const t = caption.dataset.shark === 'megalodon' ? u : p;
+      const v = pulse(t, a, b, c, d);
+      caption.style.opacity = v.toFixed(3);
+      caption.style.transform = `translateY(${(14 * (1 - v)).toFixed(1)}px)`;
+      caption.style.filter = `blur(${(9 * (1 - v)).toFixed(1)}px)`;
+      caption.style.setProperty('--track', `${(.02 + .07 * (1 - v)).toFixed(3)}em`);
+    });
+  }
   const RATE = 1900 / 1700;
   const TAIL_START = .984 / RATE;
   const renderJourney = (scroll) => {
@@ -248,9 +271,14 @@
     renderWhales((progress - .33) / .12);
     showHammerFrame((progress - .45) / .10);
     showHammerGreatWhiteFrame((progress - .55) / .26);
-    showSixgillFrame((progress - .81) / .128);
+    // Slow down for the great white feeding among the fish (frames 0-70), rush through the empty dark water (70-170), then play the sixgill and seabed at near normal pace.
+    const sixgillFrame = progress < .858 ? 70 * clamp((progress - .81) / .048)
+      : progress < .873 ? 70 + 100 * clamp((progress - .858) / .015)
+      : 170 + 310 * clamp((progress - .873) / .065);
+    showSixgillFrame(sixgillFrame / 480);
     renderDeep((progress - .55) / .45);
     renderFinale(progress, tail);
+    renderCaptions(progress, tail);
     // Look upward as the blacktip leaves, then let the watercolor light cover the handoff.
     setOpacity(blacktipStage, span(progress, .195, .213) * (1 - span(progress, .339, .350)));
     blacktipStage.style.transform = `scale(${(1 + .12 * span(progress, .310, .349)).toFixed(3)}) translateY(${(9 * span(progress, .310, .349)).toFixed(2)}%)`;
@@ -258,10 +286,10 @@
     setOpacity(whaleHammerStage, span(progress, .445, .475) * (1 - span(progress, .585, .60)));
     setOpacity(deepStage, span(progress, .545, .585));
     // Keep the existing hammerhead arrival, then follow the user's clip into the great white.
-    setOpacity(hammerGreatWhiteStage, span(progress, .547, .557) * (1 - span(progress, .806, .828)));
+    setOpacity(hammerGreatWhiteStage, span(progress, .547, .557) * (1 - span(progress, .806, .822)));
     // The sixgill clip's last frame is the first frame of the megalodon clip, so the handoff is seamless.
-    setOpacity(sixgillVideoStage, span(progress, .815, .829) * (1 - span(progress, .938, .943)));
-    const entryInk = .94 * pulse(progress, .807, .817, .826, .842);
+    setOpacity(sixgillVideoStage, span(progress, .808, .818) * (1 - span(progress, .936, .947)));
+    const entryInk = .38 * pulse(progress, .806, .811, .813, .822);
     const seabedSilt = .22 * pulse(progress, .937, .942, .948, .954);
     setOpacity(sixgillEntryVeil, Math.max(entryInk, seabedSilt));
     setOpacity(firstHandoffWash, pulse(progress, .320, .329, .343, .355));
