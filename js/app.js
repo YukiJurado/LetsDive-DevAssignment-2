@@ -34,14 +34,14 @@
   const sixgillVideoStage = q('.sixgill-video-stage');
   const sixgillAnimation = q('.sixgill-animation');
   const sixgillEntryVeil = q('.sixgill-entry-veil');
+  const megalodonStage = q('.megalodon-video-stage');
+  const megalodonAnimation = q('.megalodon-animation');
   const abyssVeil = q('.abyss-veil');
   const deepStage = q('.deep-stage');
   const greatWhiteBelly = q('.great-white-belly');
   const greatWhiteEye = q('.great-white-eye');
   const greatWhite = q('.great-white-frame');
   const sixgill = q('.sixgill-frame');
-  const tooth = q('.tooth-frame');
-  const mouth = q('.mouth-frame');
   const calmReturn = q('.return-frame');
   const finalTitle = q('.final-title');
   const deepCurrent = q('.deep-current');
@@ -50,6 +50,8 @@
   const deepInk = q('.deep-ink');
   const soundToggle = q('.sound-toggle');
   const clamp = (x) => Math.max(0, Math.min(1, x));
+  // Scroll point where the jaws first burst out of the dark (frame 173 of the 241-frame clip).
+  const LUNGE_AT = .9672;
   // Eased fades make watercolor frames dissolve without visible linear seams.
   const span = (x, a, b) => {
     const t = clamp((x - a) / (b - a));
@@ -83,7 +85,7 @@
   function updateSound(progress) {
     const underwater = progress >= .16;
     const depth = span(progress, .69, .82);
-    const silence = 1 - .98 * pulse(progress, .95, .96, .973, .99);
+    const silence = 1 - .98 * pulse(progress, .95, .958, .975, .99);
     ambience.volume = .3 * span(progress, .16, .25) * (1 - .75 * depth) * silence;
     deepAmbience.volume = .22 * depth * silence;
     if (soundEnabled && underwater) {
@@ -94,7 +96,7 @@
       if (lastProgress < .51 && progress >= .51) playEffect(glide);
       if (lastProgress < .75 && progress >= .75) playEffect(glide);
       if (lastProgress < .82 && progress >= .82) playEffect(glide);
-      if (lastProgress < .9688 && progress >= .9688) playEffect(lunge);
+      if (lastProgress < LUNGE_AT && progress >= LUNGE_AT) playEffect(lunge);
       if (lastProgress < .979 && progress >= .979) playEffect(inkImpact);
     } else {
       ambience.pause();
@@ -132,6 +134,7 @@
   const showHammerFrame = setupFrameSequence(hammerAnimation, whaleHammerStage, 'assets/video/whales-to-hammerhead-frames', 120);
   const showHammerGreatWhiteFrame = setupFrameSequence(hammerGreatWhiteAnimation, hammerGreatWhiteStage, 'assets/video/hammerhead-to-great-white-user-frames', 277);
   const showSixgillFrame = setupFrameSequence(sixgillAnimation, sixgillVideoStage, 'assets/video/great-white-to-sixgill-seabed-frames', 481);
+  const showMegalodonFrame = setupFrameSequence(megalodonAnimation, megalodonStage, 'assets/video/megalodon-jumpscare-frames', 241);
   function render(progress) {
     const p = clamp(progress);
     const approach = span(p, .04, .57);
@@ -196,14 +199,17 @@
     setOpacity(deepParticles, .35 * span(p, .15, .3) * (1 - span(p, .84, .9)) + .13 * span(p, .96, 1));
   }
   function renderFinale(p) {
-    // The fossil holds in quiet water. Darkness hides the ancient vision until the jaws lunge.
-    const zoomIn = span(p, .938, .956);
+    // The fossil holds in quiet water and slowly fades to black. Then the jaws burst out within a very short scroll.
     const zoomOut = span(p, .984, .998);
-    setOpacity(tooth, span(p, .936, .946) * (1 - span(p, .978, .984)));
-    tooth.style.transform = `scale(${(1 + 1.7 * zoomIn).toFixed(3)})`;
-    setOpacity(abyssVeil, p < .9688 ? .97 * span(p, .956, .967) : 0);
-    setOpacity(mouth, p >= .9688 ? 1 - span(p, .979, .984) : 0);
-    mouth.style.transform = `scale(${(1.08 + 1.72 * span(p, .9688, .978)).toFixed(3)})`;
+    const lerp = (x, a, b, from, to) => from + (to - from) * clamp((x - a) / (b - a));
+    // Clip frames: 0-120 fossil, 120-172 darkness, 173-240 jaws lunge (of 240).
+    const clipProgress = p < .958 ? lerp(p, .940, .958, 0, .5)
+      : p < LUNGE_AT ? lerp(p, .958, LUNGE_AT, .5, .7167)
+      : lerp(p, LUNGE_AT, .9795, .7167, 1);
+    showMegalodonFrame(clipProgress);
+    setOpacity(megalodonStage, span(p, .936, .942) * (1 - span(p, .979, .984)));
+    megalodonStage.style.transform = `scale(${(1 + .35 * span(p, .940, .958) * (1 - span(p, .958, .961))).toFixed(3)})`;
+    setOpacity(abyssVeil, p < LUNGE_AT ? .97 * span(p, .958, .964) : 0);
     setOpacity(deepInk, .96 * pulse(p, .977, .983, .986, .993));
     deepInk.style.transform = `scale(${(1.08 + .3 * span(p, .977, .993)).toFixed(3)})`;
     setOpacity(calmReturn, span(p, .984, .993));
@@ -229,8 +235,8 @@
     setOpacity(deepStage, span(progress, .545, .585));
     // Keep the existing hammerhead arrival, then follow the user's clip into the great white.
     setOpacity(hammerGreatWhiteStage, span(progress, .547, .557) * (1 - span(progress, .806, .828)));
-    setOpacity(sixgillVideoStage, span(progress, .815, .829) * (1 - span(progress, .94, .952)));
-    sixgillVideoStage.style.transform = `scale(${(1 + 1.7 * span(progress, .938, .959)).toFixed(3)})`;
+    // The sixgill clip's last frame is the first frame of the megalodon clip, so the handoff is seamless.
+    setOpacity(sixgillVideoStage, span(progress, .815, .829) * (1 - span(progress, .938, .943)));
     const entryInk = .94 * pulse(progress, .807, .817, .826, .842);
     const seabedSilt = .22 * pulse(progress, .937, .942, .948, .954);
     setOpacity(sixgillEntryVeil, Math.max(entryInk, seabedSilt));
