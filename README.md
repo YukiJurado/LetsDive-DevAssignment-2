@@ -10,9 +10,9 @@ The preview uses GSAP ScrollTrigger when its CDN scripts are available and falls
 
 ## Story order
 
-Diving mask → blacktip reef shark → whale sharks → hammerheads → great white → top-view sixgill → fossil tooth zoom → megalodon mouth → zoom back out → fini.
+Diving mask → blacktip reef shark → whale sharks → hammerheads → great white → top-view sixgill → fossil tooth zoom → megalodon mouth → zoom back out → fin.
 
-The sharks and ocean share one hand-painted watercolor style. The opening mask carries “lets dive!” and the ending says “fini”; the underwater story has no narration. The megalodon is an ancient vision, not a living shark in the present-day ocean.
+The sharks and ocean share one hand-painted watercolor style. The opening mask carries “lets dive!” and the ending says “fin”; the underwater story has no narration. The megalodon is an ancient vision, not a living shark in the present-day ocean. The fossil after the vision is the exact same image as the fossil held at the end of the sixgill shot.
 
 ## Current status
 
