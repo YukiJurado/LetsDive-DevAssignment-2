@@ -1,0 +1,16 @@
+---
+name: magnific-scrollworld
+description: Create or repair Magnific video transitions for the Let's Dive shark ScrollWorld using first/last frames, reviewed prompts and credits, and reversible scroll playback.
+---
+
+# Magnific ScrollWorld
+
+Use this project skill when producing a new shark shot, connecting two shots, restyling a clip, or fixing a visible seam. It adapts the [scroll-world reference skill](https://github.com/oso95/scroll-world/blob/main/skills/scroll-world/SKILL.md) to the Magnific workflow and this site's reversible frame playback. The local production record is `docs/production-notes.md` and `js/app.js`. For the completed great-white connector, read [references/great-white-feeding-bridge.md](references/great-white-feeding-bridge.md).
+
+1. **Identify the seam.** Name the outgoing and incoming clips. Extract their actual last and first frames. Inspect camera angle, shark identity and position, water colour, depth, fish, and motion direction. Decide whether a keyed bridge, a restyle, or a timing change addresses the mismatch. Prefer one continuous camera path and one identifiable shark through a bridge.
+2. **Prepare a review packet before a paid Magnific call.** Show the user the exact proposed prompt, the two actual keyframes as previews with repository paths, model, aspect ratio, resolution, duration, sound setting, and an estimated credit cost for that same configuration. Check Magnific's current model capabilities and run its cost simulation; previously recorded settings are a starting point, not a current-price quote. State any unknown input or cost plainly. Complete this packet and wait for the user's review before starting generation or modification that spends credits.
+3. **Produce the shot after review.** Use the current Magnific video model that supports the required start/end image inputs for a bridge; use Modify Video when retaining an existing clip's motion while changing its look. Preserve the source output and record the exact prompt, settings, cost, and input/output paths in `docs/production-notes.md`. Do not substitute an unverified old provider command for the current Magnific interface.
+4. **Check the result as a seam, not just a standalone video.** Inspect the first and last generated frames beside their neighbours. Watch for a changed shark, duplicate shark, camera jump, sudden colour shift, extra cut, or a frozen frame. Revise the prompt or inputs if the endpoints fail before integrating it.
+5. **Integrate reversible playback.** Export frames to the existing sequence's dimensions and rate; skip a duplicate boundary frame when appending. Update sequence counts and progress mapping in `js/app.js`. Keep a near-matching handoff short. Test slow, fast, and reverse scroll across both joins, reduced-motion stills, and sound cues tied to that progress range. The transition is complete when the same shark and camera motion remain legible in both scroll directions without a visible double exposure or blank frame.
+
+For the existing great-white sequence, use the recorded 12 fps, 960×540 frame export and the timing in `docs/production-notes.md`; choose fresh settings only for a genuinely new shot. The historical example explains why a bridge and a separate restyle were both needed.
