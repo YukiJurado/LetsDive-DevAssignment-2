@@ -1,5 +1,8 @@
 # Shark ScrollWorld
 
+- **Live website:** [Let's Dive](https://cheery-monstera-926d1b.netlify.app/)
+- **GitHub repository:** [LetsDive-DevAssignment-2](https://github.com/YukiJurado/LetsDive-DevAssignment-2)
+
 A mostly wordless, scroll-driven watercolor journey from a sunlit reef into the deep ocean. Visitors put on a diving mask, meet sharks as the water grows darker, and discover a megalodon fossil that sparks a brief ancient vision.
 
 This repository contains a reversible scroll journey through the complete planned story: the diving-mask intro, a blacktip swimming across the reef, animated transitions to whale sharks and a hammerhead, then the great white, sixgill, megalodon fossil, ancient vision, and quiet return. Open `index.html` in a browser and scroll down or back up to preview it. The user's hammerhead-to-great-white and great-white-to-sixgill videos carry the middle of the journey; a Seedance continuation follows the sixgill from above as it swims past the fossil tooth. [`docs/storyboard.md`](docs/storyboard.md) records the intended shots.
@@ -23,7 +26,6 @@ The opening is hand-painted watercolor; the deep-water shots and the ending are 
 - The full story is navigable and fully animated: an intro dive from the surface into the reef, the user-supplied blacktip reef animation, two 12-second transition tests, the user-supplied hammerhead-to-great-white and great-white-to-sixgill animations (the great white feeding was restyled to match the hammerhead and great white), a Seedance seabed continuation, a photographic megalodon jumpscare and pull-back that start on the sixgill shot's fossil frame, shark captions, and five sound effects. Water darkens, particles thin, and the ambience quiets around the ancient vision.
 - The video and deeper scenes are production tests. Review pacing and transitions during slow, fast, and reverse scrolling before producing frame-matched animation for the deeper sharks.
 - Prompt-production references and continuity rules are recorded in [`docs/production-notes.md`](docs/production-notes.md).
-- A live site URL will be added here after deployment.
 
 Visual prompts and intro decisions are recorded in [`docs/intro-art-prompts.md`](docs/intro-art-prompts.md). The illustrations were created with Codex's built-in image generation tool. The first two video tests and sound effects were generated with Magnific; the blacktip reef and hammerhead-to-great-white animations were supplied by the user.
 
