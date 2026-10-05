@@ -1,7 +1,10 @@
 # Shark ScrollWorld
 
+**Created by Yuki Jurado**
+
 - **Live website:** [Let's Dive](https://cheery-monstera-926d1b.netlify.app/)
 - **GitHub repository:** [LetsDive-DevAssignment-2](https://github.com/YukiJurado/LetsDive-DevAssignment-2)
+- **Research and process book:** [View the illustrated PDF](docs/Lets-Dive-research-and-making.pdf)
 
 A mostly wordless, scroll-driven watercolor journey from a sunlit reef into the deep ocean. Visitors put on a diving mask, meet sharks as the water grows darker, and discover a megalodon fossil that sparks a brief ancient vision.
 
